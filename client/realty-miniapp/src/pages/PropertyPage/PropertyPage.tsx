@@ -1,0 +1,213 @@
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import './PropertyPage.css';
+
+interface Property {
+  id: number;
+  city: string;
+  district: string;
+  type: string;
+  rooms: number;
+  price: number;
+  area: number;
+  floor: number;
+  totalFloors: number;
+  balcony: boolean;
+  terrace: boolean;
+  parking: boolean;
+  conditioner: boolean;
+  photos: string;
+  description: string;
+  address: string;
+}
+
+export default function PropertyPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [property, setProperty] = useState<Property | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/properties/${id}`);
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        const data = await response.json();
+        setProperty(data);
+      } catch (error) {
+        console.error('Ошибка при загрузке квартиры:', error);
+        setProperty(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperty();
+  }, [id]);
+
+  const handleContact = async () => {
+    const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+    if (!userId) {
+      alert('Ошибка: нет данных пользователя');
+      return;
+    }
+    if (!property) {
+      alert('Ошибка: объект не загружен');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, propertyId: property.id }),
+      });
+      if (res.ok) {
+        alert(
+          `✅ Заявка отправлена агенту!\n\nОбъект: ${property.address}\nЦена: ${property.price} zł/мес\n\nСкоро с вами свяжутся!`,
+        );
+      } else {
+        alert('Ошибка отправки');
+      }
+    } catch (err) {
+      console.error('Ошибка при отправке заявки:', err);
+      alert('Ошибка соединения с сервером');
+    }
+  };
+
+  if (loading) {
+    return <div className="page property-page">Загрузка...</div>;
+  }
+
+  if (!property) {
+    return (
+      <div className="page property-page">
+        <button className="property-back" onClick={() => navigate(-1)}>
+          ← Назад к поиску
+        </button>
+        <p>Объект не найден</p>
+      </div>
+    );
+  }
+
+  // Парсим фото
+  let photoUrls: string[] = [];
+  try {
+    photoUrls = JSON.parse(property.photos || '[]');
+  } catch {
+    photoUrls = property.photos ? [property.photos] : [];
+  }
+
+  return (
+    <div className="page property-page">
+      <button className="property-back" onClick={() => navigate(-1)}>
+        ← Назад к поиску
+      </button>
+
+      {/* Галерея фото */}
+      <div className="property-gallery">
+        {photoUrls.length > 0 ? (
+          <img
+            className="property-gallery__image"
+            src={photoUrls[0]}
+            alt={property.address}
+          />
+        ) : (
+          <div className="property-gallery__image property-gallery__image--placeholder">
+            Нет фото
+          </div>
+        )}
+        {photoUrls.length > 1 && (
+          <div className="property-gallery__dots">
+            {photoUrls.map((_, i) => (
+              <span
+                key={i}
+                className={`property-gallery__dot ${i === 0 ? 'property-gallery__dot--active' : ''}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Заголовок и цена */}
+      <div className="property-header">
+        <span className="property-type-badge">
+          {property.type === 'APARTMENT' ? 'Квартира' : property.type}
+        </span>
+        <h1 className="property-title">{property.address}</h1>
+        <p className="property-price">
+          {property.price.toLocaleString()} zł/мес
+        </p>
+        <p className="property-address">
+          📍 {property.city}, {property.district}
+        </p>
+      </div>
+
+      {/* Характеристики */}
+      <div className="property-section">
+        <h2 className="property-section-title">📋 Характеристики</h2>
+        <div className="property-features">
+          <div className="property-feature">
+            <span className="property-feature__icon">📐</span>
+            <span className="property-feature__label">Площадь</span>
+            <span className="property-feature__value">{property.area} м²</span>
+          </div>
+          <div className="property-feature">
+            <span className="property-feature__icon">🛏️</span>
+            <span className="property-feature__label">Комнат</span>
+            <span className="property-feature__value">{property.rooms}</span>
+          </div>
+          <div className="property-feature">
+            <span className="property-feature__icon">🏢</span>
+            <span className="property-feature__label">Этаж</span>
+            <span className="property-feature__value">
+              {property.floor} из {property.totalFloors}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Удобства */}
+      <div className="property-section">
+        <h2 className="property-section-title">✅ Удобства</h2>
+        <div className="property-amenities">
+          {property.balcony && (
+            <span className="property-amenity-badge">🌿 Балкон</span>
+          )}
+          {property.terrace && (
+            <span className="property-amenity-badge">🏖️ Терраса</span>
+          )}
+          {property.parking && (
+            <span className="property-amenity-badge">🚗 Парковка</span>
+          )}
+          {property.conditioner && (
+            <span className="property-amenity-badge">❄️ Кондиционер</span>
+          )}
+          {!property.balcony &&
+            !property.terrace &&
+            !property.parking &&
+            !property.conditioner && (
+              <span className="property-amenity-empty">
+                Без дополнительных удобств
+              </span>
+            )}
+        </div>
+      </div>
+
+      {/* Описание */}
+      {property.description && (
+        <div className="property-section">
+          <h2 className="property-section-title">📝 Описание</h2>
+          <p className="property-description">{property.description}</p>
+        </div>
+      )}
+
+      {/* Кнопка "Связаться" */}
+      <button className="property-contact-btn" onClick={handleContact}>
+        💬 Связаться с агентом
+      </button>
+    </div>
+  );
+}

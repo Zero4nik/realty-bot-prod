@@ -1,0 +1,288 @@
+.dashboard-page {
+  padding: 12px;
+  max-width: 100%;
+  margin: 0 auto;
+  color: #fff;
+  min-height: 100vh;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+
+.dashboard-title {
+  font-size: 22px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.dashboard-card {
+  background: #1c1c1e;
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 0;
+}
+
+.dashboard-card__icon {
+  font-size: 24px;
+}
+
+.dashboard-card__value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #007aff;
+  word-break: break-word;
+}
+
+.dashboard-card__label {
+  font-size: 11px;
+  color: #999;
+}
+
+.dashboard-section {
+  background: #1c1c1e;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.dashboard-section__title {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.dashboard-statuses {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.dashboard-status {
+  flex: 1;
+  text-align: center;
+  padding: 8px 6px;
+  border-radius: 10px;
+  background: #2c2c2e;
+  min-width: 0;
+}
+
+.dashboard-status--new {
+  border-left: 3px solid #ff9500;
+}
+.dashboard-status--progress {
+  border-left: 3px solid #007aff;
+}
+.dashboard-status--closed {
+  border-left: 3px solid #34c759;
+}
+
+.dashboard-status span {
+  display: block;
+  font-size: 11px;
+  color: #999;
+}
+
+.dashboard-status strong {
+  font-size: 18px;
+  display: block;
+  margin-top: 4px;
+}
+
+.dashboard-referrer {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #2c2c2e;
+  gap: 8px;
+}
+
+.dashboard-referrer:last-child {
+  border-bottom: none;
+}
+
+.dashboard-referrer__rank {
+  width: 28px;
+  font-weight: 700;
+  color: #007aff;
+  flex-shrink: 0;
+}
+
+.dashboard-referrer__name {
+  flex: 1;
+  font-size: 14px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-referrer__count {
+  color: #999;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.dashboard-inquiry {
+  padding: 10px 0;
+  border-bottom: 1px solid #2c2c2e;
+}
+
+.dashboard-inquiry:last-child {
+  border-bottom: none;
+}
+
+.dashboard-inquiry__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dashboard-inquiry__status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.dashboard-inquiry__status--new {
+  background: #ff950033;
+  color: #ff9500;
+}
+.dashboard-inquiry__status--in_progress {
+  background: #007aff33;
+  color: #007aff;
+}
+.dashboard-inquiry__status--done {
+  background: #34c75933;
+  color: #34c759;
+}
+
+.dashboard-inquiry__date {
+  font-size: 11px;
+  color: #666;
+}
+
+.dashboard-inquiry__body p {
+  font-size: 13px;
+  margin: 2px 0;
+  color: #ccc;
+  word-break: break-word;
+}
+
+.dashboard-empty {
+  text-align: center;
+  color: #666;
+  padding: 16px;
+  font-size: 14px;
+}
+
+.dashboard-loading,
+.dashboard-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  font-size: 15px;
+}
+
+.dashboard-error h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+@media (min-width: 480px) {
+  .dashboard-page {
+    padding: 16px;
+    padding-bottom: 80px;
+  }
+
+  .dashboard-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-cards {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-card {
+    padding: 16px;
+    gap: 6px;
+  }
+
+  .dashboard-card__icon {
+    font-size: 28px;
+  }
+
+  .dashboard-card__value {
+    font-size: 24px;
+  }
+
+  .dashboard-card__label {
+    font-size: 13px;
+  }
+
+  .dashboard-section {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .dashboard-section__title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .dashboard-status {
+    padding: 10px 8px;
+  }
+
+  .dashboard-status span {
+    font-size: 13px;
+  }
+
+  .dashboard-status strong {
+    font-size: 22px;
+  }
+
+  .dashboard-referrer__name {
+    font-size: 15px;
+  }
+
+  .dashboard-referrer__count {
+    font-size: 13px;
+  }
+
+  .dashboard-inquiry__status {
+    font-size: 12px;
+  }
+
+  .dashboard-inquiry__date {
+    font-size: 12px;
+  }
+
+  .dashboard-inquiry__body p {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-page {
+    max-width: 800px;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
