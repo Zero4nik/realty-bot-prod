@@ -21,7 +21,7 @@ export class BotService {
         [
           Markup.button.webApp(
             'Выбрать квартиру',
-            'https://www.bestchange.ru/tether-trc20-to-tinkoff.html',
+            'https://realty-bot-prod-bjmn.vercel.app',
           ),
         ],
         [
