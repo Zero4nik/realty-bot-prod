@@ -115,15 +115,6 @@ export default function CatalogPage() {
     key !== 'amenities' ? value !== '' : (value as string[]).length > 0,
   );
 
-  const getFirstPhoto = (property: Property): string => {
-    try {
-      const photos = JSON.parse(property.photos || '[]');
-      return photos[0] || '';
-    } catch {
-      return property.photos || '';
-    }
-  };
-
   return (
     <div className="app">
       <div className="search-bar">
