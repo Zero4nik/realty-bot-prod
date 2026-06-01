@@ -31,7 +31,9 @@ export default function PropertyPage() {
     const fetchProperty = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/properties/${id}`);
+        const response = await fetch(
+          `https://realty-bot-prod-production.up.railway.app/api/properties/${id}`,
+        );
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
@@ -59,11 +61,14 @@ export default function PropertyPage() {
     }
 
     try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, propertyId: property.id }),
-      });
+      const res = await fetch(
+        'https://realty-bot-prod-production.up.railway.app/api/inquiries',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, propertyId: property.id }),
+        },
+      );
       if (res.ok) {
         alert(
           `✅ Заявка отправлена агенту!\n\nОбъект: ${property.address}\nЦена: ${property.price} zł/мес\n\nСкоро с вами свяжутся!`,

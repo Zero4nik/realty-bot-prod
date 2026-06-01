@@ -38,11 +38,14 @@ export default function DashboardPage() {
       try {
         setLoading(true);
 
-        const response = await fetch('/api/dashboard', {
-          headers: {
-            'x-user-id': String(userId || ''),
+        const response = await fetch(
+          'https://realty-bot-prod-production.up.railway.app/api/dashboard',
+          {
+            headers: {
+              'x-user-id': String(userId || ''),
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           if (response.status === 403) {

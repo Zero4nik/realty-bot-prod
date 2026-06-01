@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Context, Markup } from 'telegraf';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { inlineKeyboard } from 'telegraf/markup';
 
 @Injectable()

@@ -29,18 +29,23 @@ export default function ProfilePage() {
         const telegramId = tgUser?.id || 12345678;
 
         // Запрос к бэкенду за полным профилем
-        const response = await fetch(`/api/users/${telegramId}`);
+        const response = await fetch(
+          `https://realty-bot-prod-production.up.railway.app/api/users/${telegramId}`,
+        );
         if (!response.ok) {
-          const createRes = await fetch('/api/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              telegramId: String(telegramId),
-              firstName: tgUser?.first_name || 'Тестовый',
-              lastName: tgUser?.last_name || '',
-              username: tgUser?.username || null,
-            }),
-          });
+          const createRes = await fetch(
+            'https://realty-bot-prod-production.up.railway.app/api/users',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                telegramId: String(telegramId),
+                firstName: tgUser?.first_name || 'Тестовый',
+                lastName: tgUser?.last_name || '',
+                username: tgUser?.username || null,
+              }),
+            },
+          );
           const newUser = await createRes.json();
           setUser(newUser);
           setReferralLink(
