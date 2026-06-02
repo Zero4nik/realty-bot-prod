@@ -4,6 +4,7 @@ import CatalogPage from './pages/CatalogPage/CatalogPage';
 import PropertyPage from './pages/PropertyPage/PropertyPage';
 import DashboardPage from './pages/DashboardsPage/DashboardPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
+import AdminPage from './pages/Admin/AdminPage';
 export default function App() {
   return (
     <BrowserRouter>
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/property/:id" element={<PropertyPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>
   );
