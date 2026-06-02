@@ -16,14 +16,12 @@ interface UserProfile {
 export default function HomePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     const telegramId = tg?.initDataUnsafe?.user?.id?.toString();
 
     if (!telegramId) {
-      setLoading(false);
       return;
     }
 
@@ -31,7 +29,6 @@ export default function HomePage() {
     const cached = localStorage.getItem('userProfile');
     if (cached) {
       setUser(JSON.parse(cached));
-      setLoading(false);
     }
 
     // Загружаем из API
@@ -65,8 +62,7 @@ export default function HomePage() {
           localStorage.setItem('userProfile', JSON.stringify(data));
         }
       })
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+      .catch(() => setUser(null));
   }, []);
 
   const isAdmin = user?.role === 'admin';
