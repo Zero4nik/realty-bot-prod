@@ -30,11 +30,11 @@ export default function ProfilePage() {
 
         // Запрос к бэкенду за полным профилем
         const response = await fetch(
-          `https://realty-bot-prod-production.up.railway.app/api/users/${telegramId}`,
+          `https://realty-bot-prod.onrender.com/api/users/${telegramId}`,
         );
         if (!response.ok) {
           const createRes = await fetch(
-            'https://realty-bot-prod-production.up.railway.app/api/users',
+            'https://realty-bot-prod.onrender.com/api/users',
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },

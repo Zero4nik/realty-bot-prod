@@ -32,7 +32,7 @@ export default function PropertyPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://realty-bot-prod-production.up.railway.app/api/properties/${id}`,
+          `https://realty-bot-prod.onrender.com/api/properties/${id}`,
         );
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
@@ -62,7 +62,7 @@ export default function PropertyPage() {
 
     try {
       const res = await fetch(
-        'https://realty-bot-prod-production.up.railway.app/api/inquiries',
+        'https://realty-bot-prod.onrender.com/api/inquiries',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

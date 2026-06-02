@@ -39,7 +39,7 @@ export default function DashboardPage() {
         setLoading(true);
 
         const response = await fetch(
-          'https://realty-bot-prod-production.up.railway.app/api/dashboard',
+          'https://realty-bot-prod.onrender.com/api/dashboard',
           {
             headers: {
               'x-user-id': String(userId || ''),
