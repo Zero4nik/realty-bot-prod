@@ -74,15 +74,6 @@ export default function CatalogPage() {
     fetchProperties();
   }, [fetchProperties]);
 
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      alert(`DEBUG: user = ${JSON.stringify(tg.initDataUnsafe?.user)}`);
-    } else {
-      alert('DEBUG: Telegram WebApp API НЕ ДОСТУПЕН!');
-    }
-  }, []);
-
   const handleApplyFilters = useCallback(
     (filters: Filters) => {
       setActiveFilters(filters);
