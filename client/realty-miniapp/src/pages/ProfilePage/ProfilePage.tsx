@@ -20,26 +20,53 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [referralLink, setReferralLink] = useState('');
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const tg = window.Telegram?.WebApp;
+
+        // ВАЖНО: Инициализируем WebApp
+        if (tg) {
+          tg.ready();
+          tg.expand();
+        }
+
         const tgUser = tg?.initDataUnsafe?.user;
+        console.log('🔍 Telegram WebApp:', tg);
+        console.log('🔍 initDataUnsafe:', tg?.initDataUnsafe);
+        console.log('🔍 User:', tgUser);
+
         const telegramId = tgUser?.id;
 
         if (!telegramId) {
-          console.error('Не удалось получить Telegram ID');
+          console.error('❌ Не удалось получить Telegram ID');
+          console.error(
+            '📋 initDataUnsafe:',
+            JSON.stringify(tg?.initDataUnsafe),
+          );
+          setError(
+            'Не удалось получить данные пользователя из Telegram. Убедитесь, что вы открыли приложение через Telegram.',
+          );
           setUser(null);
           setLoading(false);
           return;
         }
 
+        console.log('✅ Telegram ID получен:', telegramId);
+
+        // Пробуем получить существующего пользователя
         const response = await fetch(
           `https://realty-bot-prod.onrender.com/api/users/${telegramId}`,
         );
 
+        console.log('📡 Response status:', response.status);
+
         if (!response.ok) {
+          console.log('⚠️ Пользователь не найден, создаем нового...');
+
+          // Создаем нового пользователя
           const createRes = await fetch(
             'https://realty-bot-prod.onrender.com/api/users',
             {
@@ -53,25 +80,43 @@ export default function ProfilePage() {
               }),
             },
           );
+
+          console.log('📡 Create response status:', createRes.status);
+
+          if (!createRes.ok) {
+            const errorText = await createRes.text();
+            console.error('❌ Ошибка создания пользователя:', errorText);
+            setError(`Ошибка создания пользователя: ${createRes.status}`);
+            setUser(null);
+            setLoading(false);
+            return;
+          }
+
           const newUser = await createRes.json();
+          console.log('✅ Пользователь создан:', newUser);
           setUser(newUser);
           setReferralLink(
             `https://t.me/arendapl_bot?start=ref_${newUser.referralCode}`,
           );
         } else {
           const userData = await response.json();
+          console.log('✅ Пользователь загружен:', userData);
           setUser(userData);
           setReferralLink(
             `https://t.me/arendapl_bot?start=ref_${userData.referralCode}`,
           );
         }
       } catch (error) {
-        console.error('Ошибка загрузки профиля:', error);
+        console.error('❌ Ошибка загрузки профиля:', error);
+        setError(
+          `Ошибка сети: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+        );
         setUser(null);
       } finally {
         setLoading(false);
       }
     };
+
     fetchProfile();
   }, []);
 
@@ -102,6 +147,21 @@ export default function ProfilePage() {
           <div className="profile-skeleton-avatar" />
           <div className="profile-skeleton-line" />
           <div className="profile-skeleton-line short" />
+        </div>
+        <BottomNav activeTab="profile" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page profile-page">
+        <h2 className="page-title">👤 Профиль</h2>
+        <div className="profile-error">
+          <p>❌ {error}</p>
+          <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+            Откройте консоль браузера (F12) для получения детальной информации
+          </p>
         </div>
         <BottomNav activeTab="profile" />
       </div>
@@ -160,7 +220,7 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* Статистика  */}
+      {/* Статистика */}
       <div className="profile-section">
         <h3 className="profile-section-title">📊 Статистика</h3>
         <div className="profile-stats">
