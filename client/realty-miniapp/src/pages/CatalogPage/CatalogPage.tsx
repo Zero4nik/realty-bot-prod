@@ -75,14 +75,11 @@ export default function CatalogPage() {
   }, [fetchProperties]);
 
   useEffect(() => {
-    if (window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-      const user = tg.initDataUnsafe?.user;
-      if (user) {
-        console.log(`Привет, ${user.first_name}! Твой Telegram ID: ${user.id}`);
-      }
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      alert(`DEBUG: user = ${JSON.stringify(tg.initDataUnsafe?.user)}`);
+    } else {
+      alert('DEBUG: Telegram WebApp API НЕ ДОСТУПЕН!');
     }
   }, []);
 
