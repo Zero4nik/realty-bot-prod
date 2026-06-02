@@ -4,6 +4,7 @@ import {
   Post,
   Param,
   Body,
+  Put,
   NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -45,5 +46,12 @@ export class UsersController {
   @Get(':telegramId/referrals')
   async getReferrals(@Param('telegramId') telegramId: string) {
     return this.usersService.getReferrals(telegramId);
+  }
+  @Put(':telegramId')
+  async updateUser(
+    @Param('telegramId') telegramId: string,
+    @Body() body: { role?: string },
+  ) {
+    return this.usersService.updateRole(telegramId, body.role);
   }
 }

@@ -180,4 +180,10 @@ export class UsersService {
       createdAt: user.createdAt,
     }));
   }
+  async updateRole(telegramId: string, role: string) {
+    return this.prisma.user.update({
+      where: { telegramId },
+      data: { role },
+    });
+  }
 }
