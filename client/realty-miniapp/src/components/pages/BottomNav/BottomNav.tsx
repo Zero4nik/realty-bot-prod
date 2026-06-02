@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import './BottomNav.css';
+import { useState, useEffect } from 'react';
 
 interface BottomNavProps {
   activeTab: 'home' | 'catalog' | 'profile' | 'dashboard';
@@ -12,9 +13,21 @@ const NAV_ITEMS = [
   { id: 'profile' as const, emoji: '👤', label: 'Профиль', path: '/profile' },
 ];
 
-export default function BottomNav({ activeTab, isAdmin }: BottomNavProps) {
+export default function BottomNav({ activeTab }: BottomNavProps) {
   const navigate = useNavigate();
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const telegramId = tgUser?.id;
+    if (telegramId) {
+      fetch(`https://realty-bot-prod.onrender.com/api/users/${telegramId}`)
+        .then((r) => r.json())
+        .then((user) => {
+          if (user.role === 'admin') setIsAdmin(true);
+        })
+        .catch(() => {});
+    }
+  }, []);
   return (
     <nav className="bottom-nav">
       {NAV_ITEMS.map((item) => (

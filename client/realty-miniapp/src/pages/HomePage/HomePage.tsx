@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './HomePage.css';
+
 interface UserProfile {
   id: number;
   telegramId: string;
@@ -11,30 +12,72 @@ interface UserProfile {
   role: string;
   referralCode: string;
 }
+
 export default function HomePage() {
   const navigate = useNavigate();
-
-  const tg = window.Telegram?.WebApp;
-  const telegramId = tg?.initDataUnsafe?.user?.id?.toString();
-
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (telegramId) {
-      fetch(`/api/users/${telegramId}`)
-        .then((res) => res.json())
-        .then((data) => setUser(data))
-        .catch(() => setUser(null));
+    const tg = window.Telegram?.WebApp;
+    const telegramId = tg?.initDataUnsafe?.user?.id?.toString();
+
+    if (!telegramId) {
+      setLoading(false);
+      return;
     }
-  }, [telegramId]);
+
+    // Пробуем кэш СРАЗУ
+    const cached = localStorage.getItem('userProfile');
+    if (cached) {
+      setUser(JSON.parse(cached));
+      setLoading(false);
+    }
+
+    // Загружаем из API
+    fetch(`https://realty-bot-prod.onrender.com/api/users/${telegramId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('User not found');
+        return res.json();
+      })
+      .then((data) => {
+        setUser(data);
+        localStorage.setItem('userProfile', JSON.stringify(data));
+      })
+      .catch(() => {
+        // Если юзера нет — создаём
+        const tgUser = tg?.initDataUnsafe?.user;
+        return fetch('https://realty-bot-prod.onrender.com/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telegramId: telegramId,
+            firstName: tgUser?.first_name || 'Пользователь',
+            lastName: tgUser?.last_name || '',
+            username: tgUser?.username || null,
+          }),
+        });
+      })
+      .then((res) => res?.json())
+      .then((data) => {
+        if (data) {
+          setUser(data);
+          localStorage.setItem('userProfile', JSON.stringify(data));
+        }
+      })
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
+
   const isAdmin = user?.role === 'admin';
+
   const categories = [
     {
       id: 'rent',
       emoji: '🏠',
       title: 'Аренда',
       desc: 'Квартиры и дома на длительный срок',
-      path: '/catalog?type=rent',
+      path: '/catalog',
       available: true,
     },
     {
@@ -57,7 +100,7 @@ export default function HomePage() {
       id: 'investment',
       emoji: '📈',
       title: 'Инвестиции',
-      desc: 'Объекты с высокой доходностью под сдачу или перепродажу',
+      desc: 'Объекты с высокой доходностью',
       path: '/catalog?type=investment',
       available: false,
     },
@@ -65,7 +108,7 @@ export default function HomePage() {
       id: 'okazjonalny',
       emoji: '📋',
       title: 'Akt Okazjonalny',
-      desc: 'Аренда с нотариальным договором по польскому законодательству',
+      desc: 'Аренда с нотариальным договором',
       path: '/catalog?type=okazjonalny',
       available: false,
     },
@@ -73,7 +116,7 @@ export default function HomePage() {
       id: 'relocation',
       emoji: '🚚',
       title: 'Переезд под ключ',
-      desc: 'Подбор жилья, ВНЖ, прописка, школа для детей',
+      desc: 'Подбор жилья, ВНЖ, прописка',
       path: '/catalog?type=relocation',
       available: false,
     },
