@@ -78,7 +78,7 @@ export default function BottomNav({
           className={`bottom-nav__item ${
             activeTab === 'dashboard' ? 'bottom-nav__item--active' : ''
           }`}
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/admin')}
         >
           <span className="bottom-nav__icon">⚙️</span>
           <span className="bottom-nav__label">Админка</span>

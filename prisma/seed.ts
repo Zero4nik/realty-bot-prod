@@ -3,6 +3,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.property.deleteMany({});
+  console.log('🗑️ Старые объекты удалены');
+
   const properties = [
     {
       title: 'Уютная квартира в центре Варшавы',
@@ -67,7 +70,7 @@ async function main() {
     await prisma.property.create({ data: property });
   }
 
-  console.log('Seed completed: 3 properties created');
+  console.log('✅ Seed завершён: создано 3 объекта');
 }
 
 main()
