@@ -119,6 +119,9 @@ export default function AdminPage() {
 
   return (
     <div className="admin-page">
+      <button className="property-back" onClick={() => navigate(-1)}>
+        ← Назад к поиску
+      </button>
       <h2>📊 Админ-панель</h2>
 
       <button className="admin-btn-add" onClick={() => navigate('/dashboard')}>
@@ -137,16 +140,20 @@ export default function AdminPage() {
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
           />
-          <select
+          <input
+            list="cities"
+            placeholder="Город *"
             value={form.city}
             onChange={(e) => setForm({ ...form, city: e.target.value })}
-          >
-            <option>Warszawa</option>
-            <option>Kraków</option>
-            <option>Wrocław</option>
-            <option>Gdańsk</option>
-            <option>Poznań</option>
-          </select>
+            required
+          />
+          <datalist id="cities">
+            <option value="Warszawa" />
+            <option value="Kraków" />
+            <option value="Wrocław" />
+            <option value="Gdańsk" />
+            <option value="Poznań" />
+          </datalist>
           <input
             placeholder="Район"
             value={form.district}
