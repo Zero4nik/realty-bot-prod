@@ -13,21 +13,40 @@ const NAV_ITEMS = [
   { id: 'profile' as const, emoji: '👤', label: 'Профиль', path: '/profile' },
 ];
 
-export default function BottomNav({ activeTab }: BottomNavProps) {
+export default function BottomNav({
+  activeTab,
+  isAdmin: isAdminProp,
+}: BottomNavProps) {
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminLocal, setIsAdminLocal] = useState(false);
+
+  const isAdmin = isAdminProp ?? isAdminLocal;
+
   useEffect(() => {
+    if (isAdminProp !== undefined) return;
+
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     const telegramId = tgUser?.id;
-    if (telegramId) {
-      fetch(`https://realty-bot-prod.onrender.com/api/users/${telegramId}`)
-        .then((r) => r.json())
-        .then((user) => {
-          if (user.role === 'admin') setIsAdmin(true);
-        })
-        .catch(() => {});
+
+    if (!telegramId) {
+      console.warn('[BottomNav] Telegram user ID не найден');
+      return;
     }
-  }, []);
+
+    fetch(`https://realty-bot-prod.onrender.com/api/users/${telegramId}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((user) => {
+        console.log('[BottomNav] User data:', user);
+        if (user.role === 'admin') setIsAdminLocal(true);
+      })
+      .catch((err) => {
+        console.error('[BottomNav] Ошибка получения роли:', err);
+      });
+  }, [isAdminProp]);
+
   return (
     <nav className="bottom-nav">
       {NAV_ITEMS.map((item) => (
