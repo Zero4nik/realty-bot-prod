@@ -26,7 +26,7 @@ export default function ProfilePage() {
       try {
         // Получаем Telegram user из WebApp
         const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        const telegramId = tgUser?.id || 12345678;
+        const telegramId = tgUser?.id || 'Ошибка данных';
 
         // Запрос к бэкенду за полным профилем
         const response = await fetch(
@@ -49,13 +49,13 @@ export default function ProfilePage() {
           const newUser = await createRes.json();
           setUser(newUser);
           setReferralLink(
-            `https://t.me/arenda_pl_bot?start=ref_${newUser.referralCode}`,
+            `https://t.me/arendapl_bot?start=ref_${newUser.referralCode}`,
           );
         } else {
           const userData = await response.json();
           setUser(userData);
           setReferralLink(
-            `https://t.me/arenda_pl_bot?start=ref_${userData.referralCode}`,
+            `https://t.me/arendapl_bot?start=ref_${userData.referralCode}`,
           );
         }
       } catch (error) {
