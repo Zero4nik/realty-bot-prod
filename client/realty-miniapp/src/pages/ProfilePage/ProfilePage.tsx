@@ -24,14 +24,21 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // Получаем Telegram user из WebApp
-        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        const telegramId = tgUser?.id || 'Ошибка данных';
+        const tg = window.Telegram?.WebApp;
+        const tgUser = tg?.initDataUnsafe?.user;
+        const telegramId = tgUser?.id;
 
-        // Запрос к бэкенду за полным профилем
+        if (!telegramId) {
+          console.error('Не удалось получить Telegram ID');
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch(
           `https://realty-bot-prod.onrender.com/api/users/${telegramId}`,
         );
+
         if (!response.ok) {
           const createRes = await fetch(
             'https://realty-bot-prod.onrender.com/api/users',
@@ -40,7 +47,7 @@ export default function ProfilePage() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 telegramId: String(telegramId),
-                firstName: tgUser?.first_name || 'Тестовый',
+                firstName: tgUser?.first_name || 'Пользователь',
                 lastName: tgUser?.last_name || '',
                 username: tgUser?.username || null,
               }),
@@ -60,19 +67,7 @@ export default function ProfilePage() {
         }
       } catch (error) {
         console.error('Ошибка загрузки профиля:', error);
-        // Fallback для браузера
-        setUser({
-          id: 1,
-          telegramId: '12345678',
-          username: null,
-          firstName: 'Тестовый',
-          referralCode: 'test-ref-code',
-          referralCount: 0,
-          referralEarnings: 0,
-          inquiriesCount: 0,
-          dealsCount: 0,
-        });
-        setReferralLink('https://t.me/arenda_pl_bot?start=ref_test-ref-code');
+        setUser(null);
       } finally {
         setLoading(false);
       }
