@@ -36,6 +36,15 @@ const DEFAULT_FILTERS: Filters = {
   amenities: [],
 };
 
+const AMENITIES_LIST = [
+  { value: 'balcony', label: 'Балкон' },
+  { value: 'terrace', label: 'Терраса' },
+  { value: 'parking', label: 'Парковка' },
+  { value: 'pets', label: 'Можно с животными' },
+  { value: 'conditioner', label: 'Кондиционер' },
+  { value: 'separateKitchen', label: 'Отдельная кухня' },
+];
+
 export default function FilterPanel({
   isOpen,
   onClose,
@@ -45,6 +54,7 @@ export default function FilterPanel({
   const [filters, setFilters] = useState<Filters>(
     initialFilters || DEFAULT_FILTERS,
   );
+
   useEffect(() => {
     setFilters(initialFilters || DEFAULT_FILTERS);
   }, [initialFilters]);
@@ -88,7 +98,6 @@ export default function FilterPanel({
         </div>
 
         <div className="filter-panel__body">
-          {/* Город */}
           <label className="filter-label">📍 Город</label>
           <select
             className="filter-select"
@@ -103,7 +112,6 @@ export default function FilterPanel({
             <option value="Poznań">Poznań</option>
           </select>
 
-          {/* Район */}
           <label className="filter-label">📍 Район</label>
           <input
             className="filter-input"
@@ -112,7 +120,6 @@ export default function FilterPanel({
             onChange={(e) => handleChange('district', e.target.value)}
           />
 
-          {/* Тип жилья */}
           <label className="filter-label">🏠 Тип жилья</label>
           <div className="filter-chips">
             {[
@@ -131,7 +138,6 @@ export default function FilterPanel({
             ))}
           </div>
 
-          {/* Комнаты */}
           <label className="filter-label">🛏️ Комнат</label>
           <div className="filter-chips">
             {[
@@ -151,7 +157,6 @@ export default function FilterPanel({
             ))}
           </div>
 
-          {/* Цена */}
           <label className="filter-label">💰 Цена (zł/мес)</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
@@ -172,7 +177,6 @@ export default function FilterPanel({
             />
           </div>
 
-          {/* Площадь */}
           <label className="filter-label">📐 Площадь (м²)</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
@@ -211,6 +215,20 @@ export default function FilterPanel({
               value={filters.floorTo}
               onChange={(e) => handleChange('floorTo', e.target.value)}
             />
+          </div>
+
+          {/* Удобства */}
+          <label className="filter-label">🛋️ Удобства</label>
+          <div className="filter-amenities">
+            {AMENITIES_LIST.map((amenity) => (
+              <button
+                key={amenity.value}
+                className={`filter-amenity-btn ${filters.amenities.includes(amenity.value) ? 'filter-amenity-btn--active' : ''}`}
+                onClick={() => handleAmenityToggle(amenity.value)}
+              >
+                {amenity.label}
+              </button>
+            ))}
           </div>
         </div>
 

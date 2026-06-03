@@ -181,3 +181,27 @@
   background: var(--tg-theme-button-color, #2ea6ff);
   color: #fff;
 }
+.filter-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.filter-amenity-btn {
+  background: #2c2c2e;
+  border: 1px solid #3a3a3c;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-amenity-btn--active {
+  background: #007aff;
+  border-color: #007aff;
+  color: #fff;
+}
