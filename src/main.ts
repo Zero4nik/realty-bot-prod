@@ -6,15 +6,24 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
+      'https://realty-bot-prod.vercel.app',
+      'https://realty-bot-prod-git-main-zero4niks-projects.vercel.app',
       'https://realty-bot-prod-bjmn.vercel.app',
+      'https://realty-bot-prod-2xct32w1k-zero4niks-projects.vercel.app',
       'https://web.telegram.org',
       'https://t.me',
+      'http://localhost:5173',
+      'http://localhost:3000',
     ],
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, x-user-id, x-telegram-initdata',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
+    allowedHeaders:
+      'Content-Type, x-user-id, x-telegram-initdata, Authorization',
     credentials: true,
   });
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Server running on port ${port}`);
 }
+
 bootstrap();
