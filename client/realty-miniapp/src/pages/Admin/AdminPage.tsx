@@ -275,6 +275,14 @@ export default function AdminPage() {
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               required
             />
+            <button
+              type="button"
+              className="amenities-drawer-btn"
+              onClick={() => setShowAmenitiesDrawer(true)}
+            >
+              🛋️ Удобства{' '}
+              {selectedAmenitiesCount > 0 && `(${selectedAmenitiesCount})`}
+            </button>
             <textarea
               placeholder="Описание"
               value={form.description}
@@ -284,20 +292,9 @@ export default function AdminPage() {
               rows={3}
             />
 
-            {/* Кнопка выбора удобств */}
-            <button
-              type="button"
-              className="amenities-drawer-btn"
-              onClick={() => setShowAmenitiesDrawer(true)}
-            >
-              🛋️ Удобства{' '}
-              {selectedAmenitiesCount > 0 && `(${selectedAmenitiesCount})`}
-            </button>
-
             <button type="submit">✅ Добавить</button>
           </form>
 
-          {/* Выезжающая панель с удобствами */}
           <div
             className={`amenities-drawer-overlay ${showAmenitiesDrawer ? 'open' : ''}`}
             onClick={() => setShowAmenitiesDrawer(false)}

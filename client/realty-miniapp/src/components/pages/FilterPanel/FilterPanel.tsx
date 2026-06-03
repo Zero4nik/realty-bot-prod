@@ -193,7 +193,6 @@ export default function FilterPanel({
             />
           </div>
 
-          {/* Этаж */}
           <label className="filter-label">🏢 Этаж</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
@@ -212,27 +211,6 @@ export default function FilterPanel({
               value={filters.floorTo}
               onChange={(e) => handleChange('floorTo', e.target.value)}
             />
-          </div>
-
-          {/* Удобства */}
-          <label className="filter-label">✅ Удобства</label>
-          <div className="filter-amenities">
-            {[
-              { value: 'pets', label: '🐾 Животные' },
-              { value: 'ac', label: '❄️ Кондиционер' },
-              { value: 'balcony', label: '🏢 Балкон' },
-              { value: 'terrace', label: '🌳 Терраса' },
-              { value: 'parking', label: '🚗 Парковка' },
-            ].map((a) => (
-              <label key={a.value} className="filter-checkbox">
-                <input
-                  type="checkbox"
-                  checked={filters.amenities.includes(a.value)}
-                  onChange={() => handleAmenityToggle(a.value)}
-                />
-                {a.label}
-              </label>
-            ))}
           </div>
         </div>
 
