@@ -11,12 +11,30 @@ interface Property {
   isActive: boolean;
 }
 
+interface Amenities {
+  balcony: boolean;
+  terrace: boolean;
+  parking: boolean;
+  pets: boolean;
+  conditioner: boolean;
+  separateKitchen: boolean;
+}
+
 export default function AdminPage() {
   const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
+  const [showAmenitiesDrawer, setShowAmenitiesDrawer] = useState(false);
+  const [amenities, setAmenities] = useState<Amenities>({
+    balcony: false,
+    terrace: false,
+    parking: false,
+    pets: false,
+    conditioner: false,
+    separateKitchen: false,
+  });
   const [form, setForm] = useState({
     title: '',
-    city: '',
+    city: 'Warszawa',
     district: '',
     type: 'APARTMENT',
     rooms: 1,
@@ -59,7 +77,11 @@ export default function AdminPage() {
             'Content-Type': 'application/json',
             'x-user-id': telegramId || '',
           },
-          body: JSON.stringify({ ...form, photos: '[]' }),
+          body: JSON.stringify({
+            ...form,
+            photos: '[]',
+            ...amenities,
+          }),
         },
       );
 
@@ -78,7 +100,16 @@ export default function AdminPage() {
           address: '',
           description: '',
         });
+        setAmenities({
+          balcony: false,
+          terrace: false,
+          parking: false,
+          pets: false,
+          conditioner: false,
+          separateKitchen: false,
+        });
         setShowForm(false);
+        setShowAmenitiesDrawer(false);
         loadProperties();
       } else {
         alert('❌ Ошибка при добавлении');
@@ -117,6 +148,25 @@ export default function AdminPage() {
     }
   };
 
+  const toggleAmenity = (key: keyof Amenities) => {
+    setAmenities((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const getAmenityLabel = (key: keyof Amenities): string => {
+    const labels: Record<keyof Amenities, string> = {
+      balcony: 'Балкон',
+      terrace: 'Терраса',
+      parking: 'Парковка',
+      pets: 'Можно с животными',
+      conditioner: 'Кондиционер',
+      separateKitchen: 'Отдельная кухня',
+    };
+    return labels[key];
+  };
+
+  const selectedAmenitiesCount =
+    Object.values(amenities).filter(Boolean).length;
+
   return (
     <div className="admin-page">
       <button className="property-back" onClick={() => navigate(-1)}>
@@ -133,68 +183,178 @@ export default function AdminPage() {
       </button>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="admin-form">
-          <input
-            placeholder="Название *"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-          />
-          <input
-            list="cities"
-            placeholder="Город *"
-            value={form.city}
-            onChange={(e) => setForm({ ...form, city: e.target.value })}
-            required
-          />
-          <datalist id="cities">
-            <option value="Warszawa" />
-            <option value="Kraków" />
-            <option value="Wrocław" />
-            <option value="Gdańsk" />
-            <option value="Poznań" />
-          </datalist>
-          <input
-            placeholder="Район"
-            value={form.district}
-            onChange={(e) => setForm({ ...form, district: e.target.value })}
-          />
-          <select
-            value={form.type}
-            onChange={(e) => setForm({ ...form, type: e.target.value })}
+        <>
+          <form onSubmit={handleSubmit} className="admin-form">
+            <input
+              placeholder="Название *"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              required
+            />
+            <input
+              list="cities"
+              placeholder="Город *"
+              value={form.city}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              required
+            />
+            <datalist id="cities">
+              <option value="Warszawa" />
+            </datalist>
+            <input
+              list="districts"
+              placeholder="Район"
+              value={form.district}
+              onChange={(e) => setForm({ ...form, district: e.target.value })}
+            />
+            <datalist id="districts">
+              <option value="Śródmieście" />
+              <option value="Mokotów" />
+              <option value="Wola" />
+              <option value="Ochota" />
+              <option value="Żoliborz" />
+              <option value="Bielany" />
+              <option value="Bemowo" />
+              <option value="Ursynów" />
+              <option value="Wilanów" />
+              <option value="Włochy" />
+              <option value="Ursus" />
+              <option value="Praga-Północ" />
+              <option value="Praga-Południe" />
+              <option value="Targówek" />
+              <option value="Białołęka" />
+              <option value="Rembertów" />
+              <option value="Wawer" />
+              <option value="Wesoła" />
+            </datalist>
+            <select
+              value={form.type}
+              onChange={(e) => setForm({ ...form, type: e.target.value })}
+            >
+              <option value="APARTMENT">Квартира</option>
+              <option value="HOUSE">Дом</option>
+              <option value="ROOM">Комната</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Количество комнат"
+              value={form.rooms || ''}
+              onChange={(e) => setForm({ ...form, rooms: +e.target.value })}
+            />
+            <input
+              type="number"
+              placeholder="Цена (zł/мес) *"
+              value={form.price || ''}
+              onChange={(e) => setForm({ ...form, price: +e.target.value })}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Площадь (м²) *"
+              value={form.area || ''}
+              onChange={(e) => setForm({ ...form, area: +e.target.value })}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Этаж"
+              value={form.floor || ''}
+              onChange={(e) => setForm({ ...form, floor: +e.target.value })}
+            />
+            <input
+              type="number"
+              placeholder="Всего этажей"
+              value={form.totalFloors || ''}
+              onChange={(e) =>
+                setForm({ ...form, totalFloors: +e.target.value })
+              }
+            />
+            <input
+              placeholder="Адрес *"
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Описание"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              rows={3}
+            />
+
+            {/* Кнопка выбора удобств */}
+            <button
+              type="button"
+              className="amenities-drawer-btn"
+              onClick={() => setShowAmenitiesDrawer(true)}
+            >
+              🛋️ Удобства{' '}
+              {selectedAmenitiesCount > 0 && `(${selectedAmenitiesCount})`}
+            </button>
+
+            <button type="submit">✅ Добавить</button>
+          </form>
+
+          {/* Выезжающая панель с удобствами */}
+          <div
+            className={`amenities-drawer-overlay ${showAmenitiesDrawer ? 'open' : ''}`}
+            onClick={() => setShowAmenitiesDrawer(false)}
           >
-            <option value="APARTMENT">Квартира</option>
-            <option value="HOUSE">Дом</option>
-            <option value="ROOM">Комната</option>
-          </select>
-          <input
-            type="number"
-            placeholder="Цена (zł/мес) *"
-            value={form.price || ''}
-            onChange={(e) => setForm({ ...form, price: +e.target.value })}
-            required
-          />
-          <input
-            type="number"
-            placeholder="Площадь (м²) *"
-            value={form.area || ''}
-            onChange={(e) => setForm({ ...form, area: +e.target.value })}
-            required
-          />
-          <input
-            placeholder="Адрес *"
-            value={form.address}
-            onChange={(e) => setForm({ ...form, address: e.target.value })}
-            required
-          />
-          <textarea
-            placeholder="Описание"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            rows={3}
-          />
-          <button type="submit">✅ Добавить</button>
-        </form>
+            <div
+              className={`amenities-drawer ${showAmenitiesDrawer ? 'open' : ''}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="amenities-drawer-header">
+                <h3>Выберите удобства</h3>
+                <button
+                  className="amenities-drawer-close"
+                  onClick={() => setShowAmenitiesDrawer(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="amenities-drawer-list">
+                {(Object.keys(amenities) as Array<keyof Amenities>).map(
+                  (key) => (
+                    <label key={key} className="amenity-item">
+                      <input
+                        type="checkbox"
+                        checked={amenities[key]}
+                        onChange={() => toggleAmenity(key)}
+                      />
+                      <span>{getAmenityLabel(key)}</span>
+                    </label>
+                  ),
+                )}
+              </div>
+              <div className="amenities-drawer-footer">
+                <button
+                  className="amenities-reset-btn"
+                  onClick={() =>
+                    setAmenities({
+                      balcony: false,
+                      terrace: false,
+                      parking: false,
+                      pets: false,
+                      conditioner: false,
+                      separateKitchen: false,
+                    })
+                  }
+                >
+                  Сбросить все
+                </button>
+                <button
+                  className="amenities-save-btn"
+                  onClick={() => setShowAmenitiesDrawer(false)}
+                >
+                  Готово ({selectedAmenitiesCount})
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
 
       <h3>📋 Все квартиры ({properties.length})</h3>
