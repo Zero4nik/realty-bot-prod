@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  telegramId    String    @unique
+  username      String?
+  role          String    @default("user")
+  referralCode  String    @unique @default(uuid())
+  referrerId    Int?
+  referrer      User?     @relation("Referrals", fields: [referrerId], references: [id])
+  referrals     User[]    @relation("Referrals")
+  inquiries     Inquiry[]
+  createdAt     DateTime  @default(now())
+  firstName     String?  
+  lastName      String?   
+}
+
+model Property {
+  id          Int       @id @default(autoincrement())
+  city        String
+  title       String
+  district    String    @default("")
+  type        String
+  rooms       Int
+  price       Int
+  area        Float
+  floor       Int       @default(0)
+  totalFloors Int       @default(0)
+  balcony     Boolean   @default(false)
+  terrace     Boolean   @default(false)
+  parking     Boolean   @default(false)
+  pets        Boolean   @default(false)
+  conditioner Boolean   @default(false)
+  separateKitchen Boolean @default(false)
+  photos      String    @default("")
+  description String?
+  address     String
+  isActive    Boolean   @default(true)
+  inquiries   Inquiry[]
+  createdAt   DateTime  @default(now())
+}
+
+model Inquiry {
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  propertyId  Int
+  property    Property     @relation(fields: [propertyId], references: [id])
+  status      String       @default("new")
+  createdAt   DateTime     @default(now())
+  transaction Transaction?
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  inquiryId   Int      @unique
+  inquiry     Inquiry  @relation(fields: [inquiryId], references: [id])
+  amount      Int
+  commission  Int
+  yourPercent Int
+  createdAt   DateTime @default(now())
+}
