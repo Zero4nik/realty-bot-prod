@@ -23,6 +23,8 @@ interface Amenities {
 export default function AdminPage() {
   const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAmenitiesDrawer, setShowAmenitiesDrawer] = useState(false);
   const [amenities, setAmenities] = useState<Amenities>({
     balcony: false,
@@ -55,14 +57,23 @@ export default function AdminPage() {
   }, []);
 
   const loadProperties = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const res = await fetch(
         'https://realty-bot-prod.onrender.com/api/properties',
       );
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
       const data = await res.json();
-      setProperties(data);
+      setProperties(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Ошибка загрузки:', err);
+      setError('Не удалось загрузить объявления. Сервер временно недоступен.');
+      setProperties([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,6 +177,52 @@ export default function AdminPage() {
 
   const selectedAmenitiesCount =
     Object.values(amenities).filter(Boolean).length;
+
+  if (loading) {
+    return (
+      <div className="admin-page">
+        <button className="property-back" onClick={() => navigate(-1)}>
+          ← Назад к поиску
+        </button>
+        <h2>📊 Админ-панель</h2>
+        <div style={{ textAlign: 'center', padding: '40px', color: '#fff' }}>
+          Загрузка...
+        </div>
+        <BottomNav activeTab="home" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="admin-page">
+        <button className="property-back" onClick={() => navigate(-1)}>
+          ← Назад к поиску
+        </button>
+        <h2>📊 Админ-панель</h2>
+        <div style={{ textAlign: 'center', padding: '40px', color: '#ff6b6b' }}>
+          ⚠️ {error}
+          <div>
+            <button
+              onClick={() => loadProperties()}
+              style={{
+                marginTop: '16px',
+                padding: '8px 16px',
+                background: '#007aff',
+                border: 'none',
+                borderRadius: '8px',
+                color: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              Попробовать снова
+            </button>
+          </div>
+        </div>
+        <BottomNav activeTab="home" />
+      </div>
+    );
+  }
 
   return (
     <div className="admin-page">
