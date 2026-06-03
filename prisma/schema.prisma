@@ -8,18 +8,18 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  telegramId    String    @unique
-  username      String?
-  role          String    @default("user")
-  referralCode  String    @unique @default(uuid())
-  referrerId    Int?
-  referrer      User?     @relation("Referrals", fields: [referrerId], references: [id])
-  referrals     User[]    @relation("Referrals")
-  inquiries     Inquiry[]
-  createdAt     DateTime  @default(now())
-  firstName     String?  
-  lastName      String?   
+  id           Int       @id @default(autoincrement())
+  telegramId   String    @unique
+  username     String?
+  role         String    @default("user")
+  referralCode String    @unique @default(uuid())
+  referrerId   Int?
+  createdAt    DateTime  @default(now())
+  firstName    String?
+  lastName     String?
+  inquiries    Inquiry[]
+  referrer     User?     @relation("Referrals", fields: [referrerId], references: [id])
+  referrals    User[]    @relation("Referrals")
 }
 
 model Property {
@@ -38,32 +38,31 @@ model Property {
   parking     Boolean   @default(false)
   pets        Boolean   @default(false)
   conditioner Boolean   @default(false)
-  separateKitchen Boolean @default(false)
   photos      String    @default("")
   description String?
   address     String
   isActive    Boolean   @default(true)
-  inquiries   Inquiry[]
   createdAt   DateTime  @default(now())
+  inquiries   Inquiry[]
 }
 
 model Inquiry {
   id          Int          @id @default(autoincrement())
   userId      Int
-  user        User         @relation(fields: [userId], references: [id])
   propertyId  Int
-  property    Property     @relation(fields: [propertyId], references: [id])
   status      String       @default("new")
   createdAt   DateTime     @default(now())
+  property    Property     @relation(fields: [propertyId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
   transaction Transaction?
 }
 
 model Transaction {
   id          Int      @id @default(autoincrement())
   inquiryId   Int      @unique
-  inquiry     Inquiry  @relation(fields: [inquiryId], references: [id])
   amount      Int
   commission  Int
   yourPercent Int
   createdAt   DateTime @default(now())
+  inquiry     Inquiry  @relation(fields: [inquiryId], references: [id])
 }
