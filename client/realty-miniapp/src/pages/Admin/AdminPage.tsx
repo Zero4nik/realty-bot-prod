@@ -79,53 +79,47 @@ export default function AdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ПРОВЕРКА
+    if (!telegramId) {
+      alert('❌ Открой Mini App через бота @arendapl_bot');
+      return;
+    }
+
     try {
+      const body = {
+        ...form,
+        photos: '[]',
+        ...amenities,
+      };
+
+      console.log('Отправка:', body);
+      console.log('x-user-id:', telegramId);
+
       const res = await fetch(
         'https://realty-bot-prod.onrender.com/api/properties',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-user-id': telegramId || '',
+            'x-user-id': telegramId,
           },
-          body: JSON.stringify({
-            ...form,
-            photos: '[]',
-            ...amenities,
-          }),
+          body: JSON.stringify(body),
         },
       );
 
       if (res.ok) {
         alert('✅ Квартира добавлена!');
-        setForm({
-          title: '',
-          city: 'Warszawa',
-          district: '',
-          type: 'APARTMENT',
-          rooms: 1,
-          price: 0,
-          area: 0,
-          floor: 1,
-          totalFloors: 1,
-          address: '',
-          description: '',
-        });
-        setAmenities({
-          balcony: false,
-          terrace: false,
-          parking: false,
-          pets: false,
-          conditioner: false,
-          separateKitchen: false,
-        });
         setShowForm(false);
         setShowAmenitiesDrawer(false);
         loadProperties();
       } else {
-        alert('❌ Ошибка при добавлении');
+        const errorData = await res.json().catch(() => ({}));
+        console.error('Ошибка:', res.status, errorData);
+        alert(`❌ Ошибка: ${errorData.message || res.statusText}`);
       }
     } catch (err) {
+      console.error('Сеть:', err);
       alert('❌ Ошибка сети');
     }
   };
