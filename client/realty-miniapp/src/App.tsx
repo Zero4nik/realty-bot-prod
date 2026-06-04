@@ -1,13 +1,31 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import HomePage from './pages/HomePage/HomePage';
 import CatalogPage from './pages/CatalogPage/CatalogPage';
 import PropertyPage from './pages/PropertyPage/PropertyPage';
 import DashboardPage from './pages/DashboardsPage/DashboardPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import AdminPage from './pages/Admin/AdminPage';
-import { useExitWarning } from './hooks/useExitWarning';
+
 export default function App() {
-  useExitWarning('Вы уверены, что хотите покинуть приложение?');
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp;
+    if (!tg) return;
+
+    tg.onEvent('mainButtonClicked', () => {
+      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
+        if (ok) tg.close();
+      });
+    });
+
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
+        if (ok) tg.close();
+      });
+    });
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
