@@ -46,6 +46,7 @@ export default function AdminPage() {
     totalFloors: 1,
     address: '',
     description: '',
+    photos: '',
   });
   const [showForm, setShowForm] = useState(false);
 
@@ -61,7 +62,10 @@ export default function AdminPage() {
     setError(null);
     try {
       const res = await fetch(
-        'https://realty-bot-prod.onrender.com/api/properties',
+        'https://realty-bot-prod.onrender.com/api/properties?showAll=true',
+        {
+          headers: { 'x-user-id': telegramId || '' },
+        },
       );
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${res.statusText}`);
@@ -88,12 +92,8 @@ export default function AdminPage() {
     try {
       const body = {
         ...form,
-        photos: '[]',
         ...amenities,
       };
-
-      console.log('Отправка:', body);
-      console.log('x-user-id:', telegramId);
 
       const res = await fetch(
         'https://realty-bot-prod.onrender.com/api/properties',
@@ -111,6 +111,28 @@ export default function AdminPage() {
         alert('✅ Квартира добавлена!');
         setShowForm(false);
         setShowAmenitiesDrawer(false);
+        setForm({
+          title: '',
+          city: 'Warszawa',
+          district: '',
+          type: 'APARTMENT',
+          rooms: 1,
+          price: 0,
+          area: 0,
+          floor: 1,
+          totalFloors: 1,
+          address: '',
+          description: '',
+          photos: '',
+        });
+        setAmenities({
+          balcony: false,
+          terrace: false,
+          parking: false,
+          pets: false,
+          conditioner: false,
+          separateKitchen: false,
+        });
         loadProperties();
       } else {
         const errorData = await res.json().catch(() => ({}));
@@ -134,6 +156,10 @@ export default function AdminPage() {
     } catch (err) {
       alert('❌ Ошибка при удалении');
     }
+  };
+
+  const handleViewProperty = (id: number) => {
+    navigate(`/property/${id}`);
   };
 
   const handleToggleActive = async (id: number, isActive: boolean) => {
@@ -323,6 +349,11 @@ export default function AdminPage() {
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               required
             />
+            <input
+              placeholder="Фото (ссылки через запятую)"
+              value={form.photos}
+              onChange={(e) => setForm({ ...form, photos: e.target.value })}
+            />
             <button
               type="button"
               className="amenities-drawer-btn"
@@ -417,10 +448,16 @@ export default function AdminPage() {
             </div>
             <div className="admin-property-actions">
               <button
+                onClick={() => handleViewProperty(p.id)}
+                className="btn-active"
+              >
+                👁️
+              </button>
+              <button
                 onClick={() => handleToggleActive(p.id, p.isActive)}
                 className={p.isActive ? 'btn-active' : 'btn-inactive'}
               >
-                {p.isActive ? '👁️' : '👁️‍🗨️'}
+                {p.isActive ? '✅' : '❌'}
               </button>
               <button onClick={() => handleDelete(p.id)} className="btn-delete">
                 🗑️

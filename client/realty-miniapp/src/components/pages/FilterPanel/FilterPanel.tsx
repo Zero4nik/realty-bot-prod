@@ -106,19 +106,34 @@ export default function FilterPanel({
           >
             <option value="">Все города</option>
             <option value="Warszawa">Warszawa</option>
-            <option value="Kraków">Kraków</option>
-            <option value="Wrocław">Wrocław</option>
-            <option value="Gdańsk">Gdańsk</option>
-            <option value="Poznań">Poznań</option>
           </select>
 
           <label className="filter-label">📍 Район</label>
-          <input
-            className="filter-input"
-            placeholder="Введите район..."
+          <select
+            className="filter-select"
             value={filters.district}
             onChange={(e) => handleChange('district', e.target.value)}
-          />
+          >
+            <option value="">Все районы</option>
+            <option value="Śródmieście">Śródmieście</option>
+            <option value="Mokotów">Mokotów</option>
+            <option value="Wola">Wola</option>
+            <option value="Ochota">Ochota</option>
+            <option value="Żoliborz">Żoliborz</option>
+            <option value="Bielany">Bielany</option>
+            <option value="Bemowo">Bemowo</option>
+            <option value="Ursynów">Ursynów</option>
+            <option value="Wilanów">Wilanów</option>
+            <option value="Włochy">Włochy</option>
+            <option value="Ursus">Ursus</option>
+            <option value="Praga-Północ">Praga-Północ</option>
+            <option value="Praga-Południe">Praga-Południe</option>
+            <option value="Targówek">Targówek</option>
+            <option value="Białołęka">Białołęka</option>
+            <option value="Rembertów">Rembertów</option>
+            <option value="Wawer">Wawer</option>
+            <option value="Wesoła">Wesoła</option>
+          </select>
 
           <label className="filter-label">🏠 Тип жилья</label>
           <div className="filter-chips">
@@ -217,7 +232,6 @@ export default function FilterPanel({
             />
           </div>
 
-          {/* Удобства */}
           <label className="filter-label">🛋️ Удобства</label>
           <div className="filter-amenities">
             {AMENITIES_LIST.map((amenity) => (
