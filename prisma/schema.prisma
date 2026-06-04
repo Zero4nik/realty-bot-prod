@@ -38,6 +38,7 @@ model Property {
   parking     Boolean   @default(false)
   pets        Boolean   @default(false)
   conditioner Boolean   @default(false)
+  separateKitchen Boolean   @default(false)
   photos      String    @default("")
   description String?
   address     String
