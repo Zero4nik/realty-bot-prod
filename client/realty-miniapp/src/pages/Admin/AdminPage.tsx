@@ -26,6 +26,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAmenitiesDrawer, setShowAmenitiesDrawer] = useState(false);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [amenities, setAmenities] = useState<Amenities>({
     balcony: false,
     terrace: false,
@@ -81,6 +82,27 @@ export default function AdminPage() {
     }
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setPhotoFiles((prev) => [...prev, ...files]);
+
+      const urls = files.map((file) => URL.createObjectURL(file));
+      setForm((prev) => ({
+        ...prev,
+        photos: prev.photos
+          ? prev.photos + ', ' + urls.join(', ')
+          : urls.join(', '),
+      }));
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
+    const urls = form.photos.split(', ').filter((_, i) => i !== index);
+    setForm((prev) => ({ ...prev, photos: urls.join(', ') }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -92,6 +114,10 @@ export default function AdminPage() {
     try {
       const body = {
         ...form,
+        photos:
+          photoFiles.length > 0
+            ? JSON.stringify(photoFiles.map((f) => f.name))
+            : form.photos || '[]',
         ...amenities,
       };
 
@@ -111,6 +137,7 @@ export default function AdminPage() {
         alert('✅ Квартира добавлена!');
         setShowForm(false);
         setShowAmenitiesDrawer(false);
+        setPhotoFiles([]);
         setForm({
           title: '',
           city: 'Warszawa',
@@ -119,8 +146,8 @@ export default function AdminPage() {
           rooms: 1,
           price: 0,
           area: 0,
-          floor: 1,
-          totalFloors: 1,
+          floor: 0,
+          totalFloors: 0,
           address: '',
           description: '',
           photos: '',
@@ -146,7 +173,7 @@ export default function AdminPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Удалить квартиру?')) return;
+    if (!confirm('Удалить квартиру безвозвратно?')) return;
     try {
       await fetch(`https://realty-bot-prod.onrender.com/api/properties/${id}`, {
         method: 'DELETE',
@@ -160,22 +187,6 @@ export default function AdminPage() {
 
   const handleViewProperty = (id: number) => {
     navigate(`/property/${id}`);
-  };
-
-  const handleToggleActive = async (id: number, isActive: boolean) => {
-    try {
-      await fetch(`https://realty-bot-prod.onrender.com/api/properties/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': telegramId || '',
-        },
-        body: JSON.stringify({ isActive: !isActive }),
-      });
-      loadProperties();
-    } catch (err) {
-      alert('❌ Ошибка');
-    }
   };
 
   const toggleAmenity = (key: keyof Amenities) => {
@@ -349,11 +360,41 @@ export default function AdminPage() {
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               required
             />
-            <input
-              placeholder="Фото (ссылки через запятую)"
-              value={form.photos}
-              onChange={(e) => setForm({ ...form, photos: e.target.value })}
-            />
+
+            <div className="photo-upload">
+              <label className="photo-upload-label">
+                📸 Загрузить фото
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handlePhotoChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              {photoFiles.length > 0 && (
+                <div className="photo-preview-list">
+                  {photoFiles.map((file, index) => (
+                    <div key={index} className="photo-preview-item">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        className="photo-preview-img"
+                      />
+                      <button
+                        type="button"
+                        className="photo-remove-btn"
+                        onClick={() => removePhoto(index)}
+                      >
+                        ✕
+                      </button>
+                      <span className="photo-preview-name">{file.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
               className="amenities-drawer-btn"
@@ -449,15 +490,9 @@ export default function AdminPage() {
             <div className="admin-property-actions">
               <button
                 onClick={() => handleViewProperty(p.id)}
-                className="btn-active"
+                className="btn-view"
               >
                 👁️
-              </button>
-              <button
-                onClick={() => handleToggleActive(p.id, p.isActive)}
-                className={p.isActive ? 'btn-active' : 'btn-inactive'}
-              >
-                {p.isActive ? '✅' : '❌'}
               </button>
               <button onClick={() => handleDelete(p.id)} className="btn-delete">
                 🗑️
