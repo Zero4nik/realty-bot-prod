@@ -5,7 +5,9 @@ import PropertyPage from './pages/PropertyPage/PropertyPage';
 import DashboardPage from './pages/DashboardsPage/DashboardPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import AdminPage from './pages/Admin/AdminPage';
+import { useExitWarning } from './hooks/useExitWarning';
 export default function App() {
+  useExitWarning('Вы уверены, что хотите покинуть приложение?');
   return (
     <BrowserRouter>
       <Routes>
