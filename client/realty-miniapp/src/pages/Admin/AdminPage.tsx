@@ -80,7 +80,6 @@ export default function AdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ПРОВЕРКА
     if (!telegramId) {
       alert('❌ Открой Mini App через бота @arendapl_bot');
       return;
@@ -242,42 +241,40 @@ export default function AdminPage() {
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               required
             />
-            <input
-              list="cities"
-              placeholder="Город *"
+
+            <select
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
               required
-            />
-            <datalist id="cities">
-              <option value="Warszawa" />
-            </datalist>
-            <input
-              list="districts"
-              placeholder="Район"
+            >
+              <option value="Warszawa">Warszawa</option>
+            </select>
+
+            <select
               value={form.district}
               onChange={(e) => setForm({ ...form, district: e.target.value })}
-            />
-            <datalist id="districts">
-              <option value="Śródmieście" />
-              <option value="Mokotów" />
-              <option value="Wola" />
-              <option value="Ochota" />
-              <option value="Żoliborz" />
-              <option value="Bielany" />
-              <option value="Bemowo" />
-              <option value="Ursynów" />
-              <option value="Wilanów" />
-              <option value="Włochy" />
-              <option value="Ursus" />
-              <option value="Praga-Północ" />
-              <option value="Praga-Południe" />
-              <option value="Targówek" />
-              <option value="Białołęka" />
-              <option value="Rembertów" />
-              <option value="Wawer" />
-              <option value="Wesoła" />
-            </datalist>
+            >
+              <option value="">Выберите район</option>
+              <option value="Śródmieście">Śródmieście</option>
+              <option value="Mokotów">Mokotów</option>
+              <option value="Wola">Wola</option>
+              <option value="Ochota">Ochota</option>
+              <option value="Żoliborz">Żoliborz</option>
+              <option value="Bielany">Bielany</option>
+              <option value="Bemowo">Bemowo</option>
+              <option value="Ursynów">Ursynów</option>
+              <option value="Wilanów">Wilanów</option>
+              <option value="Włochy">Włochy</option>
+              <option value="Ursus">Ursus</option>
+              <option value="Praga-Północ">Praga-Północ</option>
+              <option value="Praga-Południe">Praga-Południe</option>
+              <option value="Targówek">Targówek</option>
+              <option value="Białołęka">Białołęka</option>
+              <option value="Rembertów">Rembertów</option>
+              <option value="Wawer">Wawer</option>
+              <option value="Wesoła">Wesoła</option>
+            </select>
+
             <select
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
