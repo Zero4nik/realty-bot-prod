@@ -1,22 +1,10 @@
 import { useEffect } from 'react';
 
-// Типы прямо здесь
-interface TelegramWebApp {
-  close: () => void;
-  showConfirm: (message: string, callback: (ok: boolean) => void) => void;
-  BackButton: {
-    show: () => void;
-    hide: () => void;
-    onClick: (fn: () => void) => void;
-    offClick: (fn: () => void) => void;
-  };
-}
-
 export const useExitWarning = (
   message: string = 'Вы уверены, что хотите покинуть приложение?',
 ) => {
   useEffect(() => {
-    const tg = (window as any).Telegram?.WebApp as TelegramWebApp | undefined;
+    const tg = window.Telegram?.WebApp;
 
     if (!tg) return;
 
