@@ -10,20 +10,41 @@ import AdminPage from './pages/Admin/AdminPage';
 export default function App() {
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
-    if (!tg) return;
 
-    tg.onEvent('mainButtonClicked', () => {
-      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
-        if (ok) tg.close();
+    if (tg) {
+      // Телефон: кнопка "Назад"
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
+          if (ok) tg.close();
+        });
       });
-    });
 
-    tg.BackButton.show();
-    tg.BackButton.onClick(() => {
-      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
-        if (ok) tg.close();
+      // Телефон: свайп вниз
+      tg.onEvent('viewportChanged', () => {
+        if (!tg.isExpanded) {
+          tg.expand();
+          tg.showConfirm(
+            'Вы уверены, что хотите покинуть приложение?',
+            (ok) => {
+              if (ok) tg.close();
+            },
+          );
+        }
       });
-    });
+    }
+
+    // ПК: закрытие вкладки
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = 'Вы уверены, что хотите покинуть приложение?';
+      return 'Вы уверены, что хотите покинуть приложение?';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   return (
