@@ -35,6 +35,7 @@ declare global {
           onClick(callback: () => void): void;
         };
         onEvent(event: string, callback: () => void): void;
+        offEvent(event: string, callback: () => void): void; 
       };
     };
   }
