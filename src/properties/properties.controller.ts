@@ -42,7 +42,7 @@ export class PropertiesController {
     @Body() data: any,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    const photoUrls = files.map((files) => `/uploads/${files.filename}`);
+    const photoUrls = files.map((file) => `/uploads/${file.filename}`);
     return this.PropertiesService.create({
       ...data,
       photos: JSON.stringify(photoUrls),
