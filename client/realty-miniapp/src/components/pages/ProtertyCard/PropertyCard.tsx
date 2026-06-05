@@ -11,8 +11,18 @@ export default function PropertyCard({ property, onClick }: Props) {
   const getFirstPhoto = (): string => {
     try {
       const photosArray = JSON.parse(property.photos || '[]');
-      return photosArray[0] || '/placeholder.jpg';
+      if (photosArray.length > 0) {
+        const firstPhoto = photosArray[0];
+        if (firstPhoto.startsWith('http')) {
+          return firstPhoto;
+        }
+        return `https://realty-bot-prod.onrender.com${firstPhoto}`;
+      }
+      return '/placeholder.jpg';
     } catch {
+      if (property.photos && property.photos.startsWith('http')) {
+        return property.photos.split(',')[0]?.trim();
+      }
       return '/placeholder.jpg';
     }
   };
