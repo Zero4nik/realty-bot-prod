@@ -50,7 +50,7 @@ export class PropertiesController {
       price: Number(data.price),
       area: Number(data.area),
       floor: Number(data.floor),
-      totalFlors: Number(data.totalFlors),
+      totalFloors: Number(data.totalFlors),
       balcony: data.balcony === 'true',
       terrace: data.terrace === 'true',
       parking: data.parking === 'true',
