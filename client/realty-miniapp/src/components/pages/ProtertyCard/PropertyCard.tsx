@@ -15,7 +15,7 @@ export default function PropertyCard({ property, onClick }: Props) {
         if (firstPhoto.startsWith('http')) {
           return firstPhoto;
         }
-        return `https://realty-bot-prod.onrender.com${firstPhoto}`;
+        return firstPhoto;
       }
       return '/placeholder.jpg';
     } catch {

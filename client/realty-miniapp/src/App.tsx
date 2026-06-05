@@ -44,36 +44,9 @@ export default function App() {
     };
   }, []);
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
 
   return (
     <BrowserRouter>
-      <div
-        style={{ position: 'fixed', top: '8px', right: '8px', zIndex: 9999 }}
-      >
-        <button
-          onClick={handleRefresh}
-          style={{
-            background: '#007aff',
-            border: 'none',
-            borderRadius: '50%',
-            width: '36px',
-            height: '36px',
-            fontSize: '18px',
-            cursor: 'pointer',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-          }}
-          title="Обновить приложение"
-        >
-          🔄
-        </button>
-      </div>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<CatalogPage />} />

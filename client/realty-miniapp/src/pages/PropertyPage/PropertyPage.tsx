@@ -104,12 +104,7 @@ export default function PropertyPage() {
   let photoUrls: string[] = [];
   try {
     const parsed = JSON.parse(property.photos || '[]');
-    photoUrls = parsed.map((url: string) => {
-      if (url.startsWith('http')) {
-        return url;
-      }
-      return `https://realty-bot-prod.onrender.com${url}`;
-    });
+    photoUrls = parsed;
   } catch {
     photoUrls = property.photos ? [property.photos] : [];
   }

@@ -13,9 +13,7 @@ import {
 } from '@nestjs/common';
 import { PropertiesService } from './properties.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { Request } from 'express';
+import { memoryStorage } from 'multer';
 
 @Controller('api/properties')
 export class PropertiesController {
@@ -34,38 +32,21 @@ export class PropertiesController {
   @Post()
   @UseInterceptors(
     FilesInterceptor('photos', 10, {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async create(
-    @Req() req: Request,
-    @Body() body: any,
+    @Body() data: any,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    const isFormData = req.headers['content-type']?.includes(
-      'multipart/form-data',
-    );
+    const photoUrls: string[] = [];
 
-    let photoUrls: string[] = [];
-
-    if (isFormData && files && files.length > 0) {
-      photoUrls = files.map((file) => `/uploads/${file.filename}`);
-    } else if (body.photos) {
-      try {
-        photoUrls = JSON.parse(body.photos);
-      } catch {
-        photoUrls = body.photos.split(',').map((s: string) => s.trim());
+    if (files) {
+      for (const file of files) {
+        const base64 = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+        photoUrls.push(base64);
       }
     }
-
-    const data = isFormData ? body : body;
 
     return this.PropertiesService.create({
       title: data.title,
@@ -80,13 +61,12 @@ export class PropertiesController {
       address: data.address,
       description: data.description || '',
       photos: JSON.stringify(photoUrls),
-      balcony: data.balcony === 'true' || data.balcony === true,
-      terrace: data.terrace === 'true' || data.terrace === true,
-      parking: data.parking === 'true' || data.parking === true,
-      pets: data.pets === 'true' || data.pets === true,
-      conditioner: data.conditioner === 'true' || data.conditioner === true,
-      separateKitchen:
-        data.separateKitchen === 'true' || data.separateKitchen === true,
+      balcony: data.balcony === 'true',
+      terrace: data.terrace === 'true',
+      parking: data.parking === 'true',
+      pets: data.pets === 'true',
+      conditioner: data.conditioner === 'true',
+      separateKitchen: data.separateKitchen === 'true',
     });
   }
 

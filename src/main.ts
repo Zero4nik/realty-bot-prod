@@ -29,10 +29,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.useStaticAssets(uploadsPath, {
-    prefix: '/uploads/',
-  });
-
   const port = process.env.PORT || 10000;
   await app.listen(port);
   console.log(`Server running on port ${port}`);
