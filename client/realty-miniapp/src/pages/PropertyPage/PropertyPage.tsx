@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './PropertyPage.css';
+import BottomNav from '../../components/pages/BottomNav/BottomNav';
 
 interface Property {
   id: number;
@@ -19,6 +20,8 @@ interface Property {
   photos: string;
   description: string;
   address: string;
+  pets: boolean;
+  separateKitchen: boolean;
 }
 
 export default function PropertyPage() {
@@ -100,7 +103,13 @@ export default function PropertyPage() {
   // Парсим фото
   let photoUrls: string[] = [];
   try {
-    photoUrls = JSON.parse(property.photos || '[]');
+    const parsed = JSON.parse(property.photos || '[]');
+    photoUrls = parsed.map((url: string) => {
+      if (url.startsWith('http')) {
+        return url;
+      }
+      return `https://realty-bot-prod.onrender.com${url}`;
+    });
   } catch {
     photoUrls = property.photos ? [property.photos] : [];
   }
@@ -111,7 +120,6 @@ export default function PropertyPage() {
         ← Назад к поиску
       </button>
 
-      {/* Галерея фото */}
       <div className="property-gallery">
         {photoUrls.length > 0 ? (
           <img
@@ -136,7 +144,6 @@ export default function PropertyPage() {
         )}
       </div>
 
-      {/* Заголовок и цена */}
       <div className="property-header">
         <span className="property-type-badge">
           {property.type === 'APARTMENT' ? 'Квартира' : property.type}
@@ -187,13 +194,21 @@ export default function PropertyPage() {
           {property.parking && (
             <span className="property-amenity-badge">🚗 Парковка</span>
           )}
+          {property.pets && (
+            <span className="property-amenity-badge">🐾 Можно с животными</span>
+          )}
           {property.conditioner && (
             <span className="property-amenity-badge">❄️ Кондиционер</span>
+          )}
+          {property.separateKitchen && (
+            <span className="property-amenity-badge">🍳 Отдельная кухня</span>
           )}
           {!property.balcony &&
             !property.terrace &&
             !property.parking &&
-            !property.conditioner && (
+            !property.pets &&
+            !property.conditioner &&
+            !property.separateKitchen && (
               <span className="property-amenity-empty">
                 Без дополнительных удобств
               </span>
@@ -213,6 +228,7 @@ export default function PropertyPage() {
       <button className="property-contact-btn" onClick={handleContact}>
         💬 Связаться с агентом
       </button>
+      <BottomNav activeTab="catalog" />
     </div>
   );
 }

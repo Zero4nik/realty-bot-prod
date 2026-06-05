@@ -7,7 +7,6 @@ interface Props {
 }
 
 export default function PropertyCard({ property, onClick }: Props) {
-  // Вычисляем первое фото
   const getFirstPhoto = (): string => {
     try {
       const photosArray = JSON.parse(property.photos || '[]');
