@@ -149,36 +149,12 @@ export default function AdminPage() {
         setShowForm(false);
         setShowAmenitiesDrawer(false);
         setPhotoFiles([]);
-        setForm({
-          title: '',
-          city: 'Warszawa',
-          district: '',
-          type: 'APARTMENT',
-          rooms: 1,
-          price: 0,
-          area: 0,
-          floor: 1,
-          totalFloors: 1,
-          address: '',
-          description: '',
-          photos: '',
-        });
-        setAmenities({
-          balcony: false,
-          terrace: false,
-          parking: false,
-          pets: false,
-          conditioner: false,
-          separateKitchen: false,
-        });
         loadProperties();
       } else {
         const errorData = await res.json().catch(() => ({}));
-        console.error('Ошибка:', res.status, errorData);
         alert(`❌ Ошибка: ${errorData.message || res.statusText}`);
       }
     } catch (err) {
-      console.error('Сеть:', err);
       alert('❌ Ошибка сети');
     }
   };

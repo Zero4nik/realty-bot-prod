@@ -7,6 +7,7 @@ import {
   Param,
   Query,
   Body,
+  Req,
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
@@ -14,17 +15,22 @@ import { PropertiesService } from './properties.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Request } from 'express';
+
 @Controller('api/properties')
 export class PropertiesController {
   constructor(private readonly PropertiesService: PropertiesService) {}
+
   @Get()
   findAll(@Query() query: any) {
     return this.PropertiesService.findAll(query);
   }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.PropertiesService.findOne(+id);
   }
+
   @Post()
   @UseInterceptors(
     FilesInterceptor('photos', 10, {
@@ -39,12 +45,27 @@ export class PropertiesController {
     }),
   )
   async create(
-    @Body() data: any,
+    @Req() req: Request,
+    @Body() body: any,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    const photoUrls = files
-      ? files.map((file) => `/uploads/${file.filename}`)
-      : [];
+    const isFormData = req.headers['content-type']?.includes(
+      'multipart/form-data',
+    );
+
+    let photoUrls: string[] = [];
+
+    if (isFormData && files && files.length > 0) {
+      photoUrls = files.map((file) => `/uploads/${file.filename}`);
+    } else if (body.photos) {
+      try {
+        photoUrls = JSON.parse(body.photos);
+      } catch {
+        photoUrls = body.photos.split(',').map((s: string) => s.trim());
+      }
+    }
+
+    const data = isFormData ? body : body;
 
     return this.PropertiesService.create({
       title: data.title,
@@ -59,18 +80,21 @@ export class PropertiesController {
       address: data.address,
       description: data.description || '',
       photos: JSON.stringify(photoUrls),
-      balcony: data.balcony === 'true',
-      terrace: data.terrace === 'true',
-      parking: data.parking === 'true',
-      pets: data.pets === 'true',
-      conditioner: data.conditioner === 'true',
-      separateKitchen: data.separateKitchen === 'true',
+      balcony: data.balcony === 'true' || data.balcony === true,
+      terrace: data.terrace === 'true' || data.terrace === true,
+      parking: data.parking === 'true' || data.parking === true,
+      pets: data.pets === 'true' || data.pets === true,
+      conditioner: data.conditioner === 'true' || data.conditioner === true,
+      separateKitchen:
+        data.separateKitchen === 'true' || data.separateKitchen === true,
     });
   }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() data: any) {
     return this.PropertiesService.update(+id, data);
   }
+
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.PropertiesService.delete(+id);
