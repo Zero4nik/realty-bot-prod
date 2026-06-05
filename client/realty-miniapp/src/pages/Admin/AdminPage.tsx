@@ -112,24 +112,35 @@ export default function AdminPage() {
     }
 
     try {
-      const body = {
-        ...form,
-        photos:
-          photoFiles.length > 0
-            ? JSON.stringify(photoFiles.map((f) => f.name))
-            : form.photos || '[]',
-        ...amenities,
-      };
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('city', form.city);
+      formData.append('district', form.district);
+      formData.append('type', form.type);
+      formData.append('rooms', String(form.rooms));
+      formData.append('price', String(form.price));
+      formData.append('area', String(form.area));
+      formData.append('floor', String(form.floor));
+      formData.append('totalFloors', String(form.totalFloors));
+      formData.append('address', form.address);
+      formData.append('description', form.description);
+
+      Object.entries(amenities).forEach(([key, value]) => {
+        formData.append(key, String(value));
+      });
+
+      photoFiles.forEach((file) => {
+        formData.append('photos', file);
+      });
 
       const res = await fetch(
         'https://realty-bot-prod.onrender.com/api/properties',
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             'x-user-id': telegramId,
           },
-          body: JSON.stringify(body),
+          body: formData,
         },
       );
 
@@ -146,8 +157,8 @@ export default function AdminPage() {
           rooms: 1,
           price: 0,
           area: 0,
-          floor: 0,
-          totalFloors: 0,
+          floor: 1,
+          totalFloors: 1,
           address: '',
           description: '',
           photos: '',
