@@ -40,16 +40,25 @@ export class PropertiesController {
   )
   async create(
     @Body() data: any,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    const photoUrls = files.map((file) => `/uploads/${file.filename}`);
+    const photoUrls = files
+      ? files.map((file) => `/uploads/${file.filename}`)
+      : [];
+
     return this.PropertiesService.create({
+      title: data.title,
+      city: data.city,
+      district: data.district || '',
+      type: data.type,
+      rooms: Number(data.rooms) || 1,
+      price: Number(data.price) || 0,
+      area: Number(data.area) || 0,
+      floor: Number(data.floor) || 0,
+      totalFloors: Number(data.totalFloors) || 0,
+      address: data.address,
+      description: data.description || '',
       photos: JSON.stringify(photoUrls),
-      rooms: Number(data.rooms),
-      price: Number(data.price),
-      area: Number(data.area),
-      floor: Number(data.floor),
-      totalFloors: Number(data.totalFloors),
       balcony: data.balcony === 'true',
       terrace: data.terrace === 'true',
       parking: data.parking === 'true',
