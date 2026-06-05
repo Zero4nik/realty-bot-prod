@@ -44,13 +44,12 @@ export class PropertiesController {
   ) {
     const photoUrls = files.map((file) => `/uploads/${file.filename}`);
     return this.PropertiesService.create({
-      ...data,
       photos: JSON.stringify(photoUrls),
       rooms: Number(data.rooms),
       price: Number(data.price),
       area: Number(data.area),
       floor: Number(data.floor),
-      totalFloors: Number(data.totalFlors),
+      totalFloors: Number(data.totalFloors),
       balcony: data.balcony === 'true',
       terrace: data.terrace === 'true',
       parking: data.parking === 'true',
