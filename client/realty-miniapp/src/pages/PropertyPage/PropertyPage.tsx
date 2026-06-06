@@ -30,12 +30,15 @@ export default function PropertyPage() {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPhoto, setCurrentPhoto] = useState(0);
+
   const nextPhoto = () => {
     setCurrentPhoto((prev) => (prev + 1) % photoUrls.length);
   };
+
   const prevPhoto = () => {
     setCurrentPhoto((prev) => (prev - 1 + photoUrls.length) % photoUrls.length);
   };
+
   useEffect(() => {
     const fetchProperty = async () => {
       try {
@@ -57,6 +60,15 @@ export default function PropertyPage() {
     };
     fetchProperty();
   }, [id]);
+
+  const handleClose = () => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
+        if (ok) tg.close();
+      });
+    }
+  };
 
   const handleContact = async () => {
     const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
@@ -98,15 +110,11 @@ export default function PropertyPage() {
   if (!property) {
     return (
       <div className="page property-page">
-        <button className="property-back" onClick={() => navigate(-1)}>
-          ← Назад к поиску.
-        </button>
         <p>Объект не найден</p>
       </div>
     );
   }
 
-  // Парсим фото
   let photoUrls: string[] = [];
   try {
     const parsed = JSON.parse(property.photos || '[]');
@@ -117,9 +125,14 @@ export default function PropertyPage() {
 
   return (
     <div className="page property-page">
-      <button className="property-back" onClick={() => navigate(-1)}>
-        ← Назад к поиску.
-      </button>
+      <div className="property-top-bar">
+        <button className="property-back" onClick={() => navigate(-1)}>
+          ← Назад к поиску
+        </button>
+        <button className="property-close" onClick={handleClose}>
+          ✕
+        </button>
+      </div>
 
       <div className="property-gallery">
         {photoUrls.length > 0 ? (
@@ -178,7 +191,6 @@ export default function PropertyPage() {
         </p>
       </div>
 
-      {/* Характеристики */}
       <div className="property-section">
         <h2 className="property-section-title">📋 Характеристики</h2>
         <div className="property-features">
@@ -202,7 +214,6 @@ export default function PropertyPage() {
         </div>
       </div>
 
-      {/* Удобства */}
       <div className="property-section">
         <h2 className="property-section-title">✅ Удобства</h2>
         <div className="property-amenities">
@@ -237,7 +248,6 @@ export default function PropertyPage() {
         </div>
       </div>
 
-      {/* Описание */}
       {property.description && (
         <div className="property-section">
           <h2 className="property-section-title">📝 Описание</h2>
@@ -245,7 +255,6 @@ export default function PropertyPage() {
         </div>
       )}
 
-      {/* Кнопка "Связаться" */}
       <button className="property-contact-btn" onClick={handleContact}>
         💬 Связаться с агентом
       </button>

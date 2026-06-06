@@ -14,25 +14,7 @@ export default function App() {
     if (tg) {
       tg.ready();
       tg.expand();
-      tg.requestFullscreen();
-      tg.BackButton.show();
-      tg.BackButton.onClick(() => {
-        tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
-          if (ok) tg.close();
-        });
-      });
-
-      tg.onEvent('viewportChanged', () => {
-        if (!tg.isExpanded) {
-          tg.expand();
-          tg.showConfirm(
-            'Вы уверены, что хотите покинуть приложение?',
-            (ok) => {
-              if (ok) tg.close();
-            },
-          );
-        }
-      });
+      tg.BackButton.hide();
     }
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
