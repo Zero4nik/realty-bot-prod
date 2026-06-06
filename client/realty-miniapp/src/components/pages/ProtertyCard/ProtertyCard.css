@@ -127,22 +127,10 @@
 
 @media (min-width: 1024px) {
   .property-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    padding: 0 12px;
-  }
-
-  .property-card__photo {
-    height: 250px;
-  }
-}
-
-@media (min-width: 1400px) {
-  .property-grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 18px;
-    max-width: 1400px;
-    margin: 0 auto;
+    padding: 0;
+    max-width: 100%;
   }
 
   .property-card__photo {
