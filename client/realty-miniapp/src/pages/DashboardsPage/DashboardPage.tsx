@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './DashboardPage.css';
 
-import ProtertyBack from '../../shared/components/protertyBack';
+import ProtertyBack from '../../shared/components/ProtertyBack';
 interface DashboardStats {
   totalUsers: number;
   totalProperties: number;

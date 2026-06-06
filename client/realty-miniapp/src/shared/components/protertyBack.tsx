@@ -7,7 +7,6 @@ export default function ProtertyBack() {
       <button className="property-back" onClick={() => navigate(-1)}>
         ← Назад к поиску
       </button>
-      ;
     </div>
   );
 }

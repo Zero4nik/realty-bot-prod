@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './PropertyPage.css';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
-import ProtertyBack from '../../shared/components/protertyBack';
+import ProtertyBack from '../../shared/components/ProtertyBack';
 
 interface Property {
   id: number;
@@ -99,7 +99,7 @@ export default function PropertyPage() {
   if (!property) {
     return (
       <div className="page property-page">
-         <ProtertyBack />
+        <ProtertyBack />
         <p>Объект не найден</p>
       </div>
     );

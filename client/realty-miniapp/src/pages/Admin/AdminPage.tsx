@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './AdminPage.css';
-import ProtertyBack from '../../shared/components/protertyBack';
+import ProtertyBack from '../../shared/components/ProtertyBack';
 
 interface Property {
   id: number;
