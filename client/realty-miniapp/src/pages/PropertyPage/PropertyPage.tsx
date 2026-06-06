@@ -48,15 +48,6 @@ export default function PropertyPage() {
     setFullscreenPhoto(null);
   };
 
-  const handleClose = () => {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
-        if (ok) tg.close();
-      });
-    }
-  };
-
   useEffect(() => {
     const fetchProperty = async () => {
       try {
@@ -138,9 +129,6 @@ export default function PropertyPage() {
       <div className="property-top-bar">
         <button className="property-back" onClick={() => navigate(-1)}>
           ← Назад к поиску
-        </button>
-        <button className="property-close" onClick={handleClose}>
-          ✕
         </button>
       </div>
 
