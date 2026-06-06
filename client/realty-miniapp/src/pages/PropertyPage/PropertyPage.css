@@ -4,6 +4,7 @@
 }
 
 .property-back {
+  display: block;
   background: none;
   border: none;
   color: var(--tg-theme-button-color, #2ea6ff);

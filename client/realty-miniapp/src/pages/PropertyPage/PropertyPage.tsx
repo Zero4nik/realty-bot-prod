@@ -1,7 +1,8 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './PropertyPage.css';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
+import ProtertyBack from '../../shared/components/protertyBack';
 
 interface Property {
   id: number;
@@ -26,10 +27,16 @@ interface Property {
 
 export default function PropertyPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [currentPhoto, setCurrentPhoto] = useState(0);
+  const nextPhoto = () => {
+    setCurrentPhoto((prev) => (prev - 1) % photoUrls.length);
+  };
+  const prevPhoto = () => {
+    setCurrentPhoto((prev) => (prev - 1 + photoUrls.length) % photoUrls.length);
+  };
   useEffect(() => {
     const fetchProperty = async () => {
       try {
@@ -92,9 +99,7 @@ export default function PropertyPage() {
   if (!property) {
     return (
       <div className="page property-page">
-        <button className="property-back" onClick={() => navigate(-1)}>
-          ← Назад к поиску
-        </button>
+         <ProtertyBack />
         <p>Объект не найден</p>
       </div>
     );
@@ -111,30 +116,48 @@ export default function PropertyPage() {
 
   return (
     <div className="page property-page">
-      <button className="property-back" onClick={() => navigate(-1)}>
-        ← Назад к поиску
-      </button>
+      <ProtertyBack />
 
       <div className="property-gallery">
         {photoUrls.length > 0 ? (
-          <img
-            className="property-gallery__image"
-            src={photoUrls[0]}
-            alt={property.address}
-          />
+          <>
+            <img
+              className="property-gallery__image"
+              src={photoUrls[currentPhoto]}
+              alt={property.address}
+            />
+            {photoUrls.length > 1 && (
+              <>
+                <button
+                  className="property-gallery__arrow property-gallery__arrow--left"
+                  onClick={prevPhoto}
+                >
+                  ‹
+                </button>
+                <button
+                  className="property-gallery__arrow property-gallery__arrow--right"
+                  onClick={nextPhoto}
+                >
+                  ›
+                </button>
+                <div className="property-gallery__dots">
+                  {photoUrls.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`property-gallery__dot ${i === currentPhoto ? 'property-gallery__dot--active' : ''}`}
+                      onClick={() => setCurrentPhoto(i)}
+                    />
+                  ))}
+                </div>
+                <div className="property-gallery__counter">
+                  {currentPhoto + 1} / {photoUrls.length}
+                </div>
+              </>
+            )}
+          </>
         ) : (
           <div className="property-gallery__image property-gallery__image--placeholder">
             Нет фото
-          </div>
-        )}
-        {photoUrls.length > 1 && (
-          <div className="property-gallery__dots">
-            {photoUrls.map((_, i) => (
-              <span
-                key={i}
-                className={`property-gallery__dot ${i === 0 ? 'property-gallery__dot--active' : ''}`}
-              />
-            ))}
           </div>
         )}
       </div>

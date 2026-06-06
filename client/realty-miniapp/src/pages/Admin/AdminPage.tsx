@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './AdminPage.css';
+import ProtertyBack from '../../shared/components/protertyBack';
 
 interface Property {
   id: number;
@@ -198,9 +199,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="admin-page">
-        <button className="property-back" onClick={() => navigate(-1)}>
-          ← Назад к поиску
-        </button>
+        <ProtertyBack />
         <h2>📊 Админ-панель</h2>
         <div style={{ textAlign: 'center', padding: '40px', color: '#fff' }}>
           Загрузка...
@@ -213,9 +212,7 @@ export default function AdminPage() {
   if (error) {
     return (
       <div className="admin-page">
-        <button className="property-back" onClick={() => navigate(-1)}>
-          ← Назад к поиску
-        </button>
+        <ProtertyBack />
         <h2>📊 Админ-панель</h2>
         <div style={{ textAlign: 'center', padding: '40px', color: '#ff6b6b' }}>
           ⚠️ {error}
@@ -243,9 +240,7 @@ export default function AdminPage() {
 
   return (
     <div className="admin-page">
-      <button className="property-back" onClick={() => navigate(-1)}>
-        ← Назад к поиску
-      </button>
+      <ProtertyBack />
       <h2>📊 Админ-панель</h2>
 
       <button className="admin-btn-add" onClick={() => navigate('/dashboard')}>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './DashboardPage.css';
-import { useNavigate } from 'react-router-dom';
+
+import ProtertyBack from '../../shared/components/protertyBack';
 interface DashboardStats {
   totalUsers: number;
   totalProperties: number;
@@ -29,7 +30,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+
   const userId =
     window.Telegram?.WebApp?.initDataUnsafe?.user?.id || '6537896588';
 
@@ -95,9 +96,7 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page">
-      <button className="property-back" onClick={() => navigate(-1)}>
-        ← Назад к поиску
-      </button>
+      <ProtertyBack />
       <h1 className="dashboard-title">DashBoard</h1>
 
       <div className="dashboard-cards">
