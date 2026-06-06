@@ -1,8 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './PropertyPage.css';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
-import ProtertyBack from '../../shared/components/ProtertyBack';
 
 interface Property {
   id: number;
@@ -27,7 +26,7 @@ interface Property {
 
 export default function PropertyPage() {
   const { id } = useParams<{ id: string }>();
-
+  const navigate = useNavigate();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPhoto, setCurrentPhoto] = useState(0);
@@ -99,7 +98,9 @@ export default function PropertyPage() {
   if (!property) {
     return (
       <div className="page property-page">
-        <ProtertyBack />
+        <button className="property-back" onClick={() => navigate(-1)}>
+          ← Назад к поиску.
+        </button>
         <p>Объект не найден</p>
       </div>
     );
@@ -116,7 +117,9 @@ export default function PropertyPage() {
 
   return (
     <div className="page property-page">
-      <ProtertyBack />
+      <button className="property-back" onClick={() => navigate(-1)}>
+        ← Назад к поиску.
+      </button>
 
       <div className="property-gallery">
         {photoUrls.length > 0 ? (
