@@ -12,7 +12,7 @@
 .exit-modal {
   background: var(--tg-theme-bg-color, #1a1a1a);
   border-radius: 16px;
-  width: 100%;
+  width: 90%;
   max-width: 340px;
   display: flex;
   flex-direction: column;
@@ -35,6 +35,10 @@
 .exit-modal__body {
   padding: 12px 20px 20px;
   text-align: center;
+  display: flex;
+  left: -50%;
+  top: -50%;
+  transform: translate(50%, 50%);
 }
 
 .exit-modal__body p {
@@ -82,7 +86,8 @@
 
 @media (max-width: 480px) {
   .exit-modal {
-    max-width: 100%;
+    width: 90%;
+    max-width: 340px;
     border-radius: 16px;
   }
 }
