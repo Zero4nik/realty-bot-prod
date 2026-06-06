@@ -32,7 +32,7 @@ export default function PropertyPage() {
   const [loading, setLoading] = useState(true);
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const nextPhoto = () => {
-    setCurrentPhoto((prev) => (prev - 1) % photoUrls.length);
+    setCurrentPhoto((prev) => (prev + 1) % photoUrls.length);
   };
   const prevPhoto = () => {
     setCurrentPhoto((prev) => (prev - 1 + photoUrls.length) % photoUrls.length);
