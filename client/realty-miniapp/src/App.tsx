@@ -12,6 +12,8 @@ export default function App() {
     const tg = window.Telegram?.WebApp;
 
     if (tg) {
+      tg.ready();
+      tg.expand();
       tg.BackButton.show();
       tg.BackButton.onClick(() => {
         tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
@@ -43,7 +45,6 @@ export default function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
-
 
   return (
     <BrowserRouter>
