@@ -486,17 +486,3 @@
     background-color: rgba(0, 0, 0, 0.7);
   }
 }
-
-@media (min-width: 1024px) {
-  .admin-page {
-    max-width: 900px;
-  }
-
-  .admin-form {
-    gap: 14px;
-  }
-
-  .amenities-drawer {
-    max-width: 550px;
-  }
-}

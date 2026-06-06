@@ -279,10 +279,24 @@
 
 @media (min-width: 768px) {
   .dashboard-page {
-    max-width: 800px;
+    max-width: 100%;
+    padding: 24px;
+    padding-bottom: 80px;
   }
 
   .dashboard-cards {
     grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .dashboard-page {
+    padding: 32px 40px;
+    padding-bottom: 80px;
+  }
+
+  .dashboard-cards {
+    gap: 18px;
   }
 }
