@@ -30,6 +30,7 @@ export default function PropertyPage() {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPhoto, setCurrentPhoto] = useState(0);
+  const [fullscreenPhoto, setFullscreenPhoto] = useState<string | null>(null);
 
   const nextPhoto = () => {
     setCurrentPhoto((prev) => (prev + 1) % photoUrls.length);
@@ -37,6 +38,23 @@ export default function PropertyPage() {
 
   const prevPhoto = () => {
     setCurrentPhoto((prev) => (prev - 1 + photoUrls.length) % photoUrls.length);
+  };
+
+  const openFullscreen = (url: string) => {
+    setFullscreenPhoto(url);
+  };
+
+  const closeFullscreen = () => {
+    setFullscreenPhoto(null);
+  };
+
+  const handleClose = () => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
+        if (ok) tg.close();
+      });
+    }
   };
 
   useEffect(() => {
@@ -60,15 +78,6 @@ export default function PropertyPage() {
     };
     fetchProperty();
   }, [id]);
-
-  const handleClose = () => {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
-        if (ok) tg.close();
-      });
-    }
-  };
 
   const handleContact = async () => {
     const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
@@ -125,6 +134,7 @@ export default function PropertyPage() {
 
   return (
     <div className="page property-page">
+      {/* Шапка: Назад слева, Закрыть справа */}
       <div className="property-top-bar">
         <button className="property-back" onClick={() => navigate(-1)}>
           ← Назад к поиску
@@ -141,6 +151,7 @@ export default function PropertyPage() {
               className="property-gallery__image"
               src={photoUrls[currentPhoto]}
               alt={property.address}
+              onClick={() => openFullscreen(photoUrls[currentPhoto])}
             />
             {photoUrls.length > 1 && (
               <>
@@ -177,6 +188,20 @@ export default function PropertyPage() {
           </div>
         )}
       </div>
+
+      {/* Модалка полноэкранного фото */}
+      {fullscreenPhoto && (
+        <div className="photo-fullscreen" onClick={closeFullscreen}>
+          <button className="photo-fullscreen__close" onClick={closeFullscreen}>
+            ✕
+          </button>
+          <img
+            src={fullscreenPhoto}
+            alt="Полноэкранное фото"
+            className="photo-fullscreen__image"
+          />
+        </div>
+      )}
 
       <div className="property-header">
         <span className="property-type-badge">
