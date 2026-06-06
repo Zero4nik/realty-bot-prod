@@ -5,7 +5,7 @@ export default function ProtertyBack() {
   return (
     <div>
       <button className="property-back" onClick={() => navigate(-1)}>
-        ← Назад к поиску
+        ← Назад к поиску.
       </button>
     </div>
   );
