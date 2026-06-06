@@ -14,6 +14,7 @@ export default function App() {
     if (tg) {
       tg.ready();
       tg.expand();
+      tg.requestFullscreen();
       tg.BackButton.show();
       tg.BackButton.onClick(() => {
         tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
