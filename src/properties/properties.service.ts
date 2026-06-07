@@ -5,7 +5,15 @@ export class PropertiesService {
   constructor(private prisma: PrismaService) {}
   async findAll(filters: any) {
     const where: any = { isActive: true };
-
+    if (filters.search) {
+      where.OR = [
+        { title: { contains: filters.search, mode: 'insensitive' } },
+        { address: { contains: filters.search, mode: 'insensitive' } },
+        { city: { contains: filters.search, mode: 'insensitive' } },
+        { district: { contains: filters.search, mode: 'insensitive' } },
+        { description: { contains: filters.search, mode: 'insensitive' } },
+      ];
+    }
     if (filters.city) where.city = filters.city;
     if (filters.type) where.type = filters.type;
     if (filters.district) where.district = { district: filters.district };

@@ -7,10 +7,32 @@ import DashboardPage from './pages/DashboardsPage/DashboardPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import AdminPage from './pages/Admin/AdminPage';
 
+function AppLayout({ children }: { children: React.ReactNode }) {
+  const tg = window.Telegram?.WebApp;
+
+  const handleClose = () => {
+    if (tg) {
+      tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
+        if (ok) tg.close();
+      });
+    }
+  };
+
+  return (
+    <>
+      <div className="app-top-bar">
+        <button className="app-close" onClick={handleClose}>
+          ✕
+        </button>
+      </div>
+      {children}
+    </>
+  );
+}
+
 export default function App() {
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
-
     if (tg) {
       tg.ready();
       tg.expand();
@@ -28,12 +50,54 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/catalog" element={<CatalogPage />} />
-        <Route path="/property/:id" element={<PropertyPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route
+          path="/"
+          element={
+            <AppLayout>
+              <HomePage />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/catalog"
+          element={
+            <AppLayout>
+              <CatalogPage />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/property/:id"
+          element={
+            <AppLayout>
+              <PropertyPage />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <AppLayout>
+              <ProfilePage />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <AppLayout>
+              <DashboardPage />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AppLayout>
+              <AdminPage />
+            </AppLayout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
