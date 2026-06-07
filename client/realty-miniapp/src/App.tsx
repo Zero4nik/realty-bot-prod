@@ -6,7 +6,7 @@ import PropertyPage from './pages/PropertyPage/PropertyPage';
 import DashboardPage from './pages/DashboardsPage/DashboardPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import AdminPage from './pages/Admin/AdminPage';
-
+import InquiriesPage from './pages/InquiriesPage/InquiriesPage';
 function AppLayout({ children }: { children: React.ReactNode }) {
   const tg = window.Telegram?.WebApp;
 
@@ -105,6 +105,14 @@ export default function App() {
           }
         />
       </Routes>
+      <Route
+        path="/inquiries"
+        element={
+          <AppLayout>
+            <InquiriesPage />
+          </AppLayout>
+        }
+      />
     </BrowserRouter>
   );
 }

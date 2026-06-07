@@ -3,16 +3,21 @@ import './BottomNav.css';
 import { useState, useEffect } from 'react';
 
 interface BottomNavProps {
-  activeTab: 'home' | 'catalog' | 'profile' | 'dashboard';
+  activeTab: 'home' | 'catalog' | 'profile' | 'dashboard' | 'inquiries';
   isAdmin?: boolean;
 }
 
 const NAV_ITEMS = [
   { id: 'home' as const, emoji: '🏠', label: 'Главная', path: '/' },
   { id: 'catalog' as const, emoji: '🔍', label: 'Поиск', path: '/catalog' },
+  {
+    id: 'inquiries' as const,
+    emoji: '💬',
+    label: 'Заявки',
+    path: '/inquiries',
+  },
   { id: 'profile' as const, emoji: '👤', label: 'Профиль', path: '/profile' },
 ];
-
 export default function BottomNav({
   activeTab,
   isAdmin: isAdminProp,
