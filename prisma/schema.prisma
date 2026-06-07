@@ -20,31 +20,32 @@ model User {
   inquiries    Inquiry[]
   referrer     User?     @relation("Referrals", fields: [referrerId], references: [id])
   referrals    User[]    @relation("Referrals")
+  message      Message[]
 }
 
 model Property {
-  id          Int       @id @default(autoincrement())
-  city        String
-  title       String
-  district    String    @default("")
-  type        String
-  rooms       Int
-  price       Int
-  area        Float
-  floor       Int       @default(0)
-  totalFloors Int       @default(0)
-  balcony     Boolean   @default(false)
-  terrace     Boolean   @default(false)
-  parking     Boolean   @default(false)
-  pets        Boolean   @default(false)
-  conditioner Boolean   @default(false)
+  id              Int       @id @default(autoincrement())
+  city            String
+  title           String
+  district        String    @default("")
+  type            String
+  rooms           Int
+  price           Int
+  area            Float
+  floor           Int       @default(0)
+  totalFloors     Int       @default(0)
+  balcony         Boolean   @default(false)
+  terrace         Boolean   @default(false)
+  parking         Boolean   @default(false)
+  pets            Boolean   @default(false)
+  conditioner     Boolean   @default(false)
   separateKitchen Boolean   @default(false)
-  photos      String    @default("")
-  description String?
-  address     String
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  inquiries   Inquiry[]
+  photos          String    @default("")
+  description     String?
+  address         String
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  inquiries       Inquiry[]
 }
 
 model Inquiry {
@@ -56,6 +57,7 @@ model Inquiry {
   property    Property     @relation(fields: [propertyId], references: [id])
   user        User         @relation(fields: [userId], references: [id])
   transaction Transaction?
+  message     Message[]
 }
 
 model Transaction {
@@ -66,4 +68,14 @@ model Transaction {
   yourPercent Int
   createdAt   DateTime @default(now())
   inquiry     Inquiry  @relation(fields: [inquiryId], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  inquiryId Int
+  userId    Int
+  createdAt DateTime @default(now())
+  text      String
+  user      User     @relation(fields: [userId], references: [id])
+  inquiry   Inquiry  @relation(fields: [inquiryId], references: [id])
 }
