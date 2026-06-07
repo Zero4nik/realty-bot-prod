@@ -21,7 +21,8 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     tg.ready();
     tg.expand();
     tg.BackButton.hide();
-
+    (tg as any).disableClosingConfirmation();
+    (tg as any).disableVerticalSwipes();
     setTimeout(() => {
       tg.BackButton.hide();
       (tg as any).BackButton?.hide?.();
