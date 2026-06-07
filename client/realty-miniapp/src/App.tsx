@@ -104,15 +104,15 @@ export default function App() {
             </AppLayout>
           }
         />
+        <Route
+          path="/inquiries"
+          element={
+            <AppLayout>
+              <InquiriesPage />
+            </AppLayout>
+          }
+        />
       </Routes>
-      <Route
-        path="/inquiries"
-        element={
-          <AppLayout>
-            <InquiriesPage />
-          </AppLayout>
-        }
-      />
     </BrowserRouter>
   );
 }
