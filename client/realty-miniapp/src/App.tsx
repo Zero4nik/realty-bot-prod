@@ -32,7 +32,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="app-top-bar">
+      <div>
         <button className="app-close" onClick={handleClose}>
           ✕
         </button>

@@ -40,7 +40,8 @@ export default function PropertyCard({ property, onClick }: Props) {
   const photo = getFirstPhoto();
   const amenities = getAmenities();
 
-  const handleContact = async () => {
+  const handleContact = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
     if (!userId) {
       alert('Ошибка: нет данных пользователя');
