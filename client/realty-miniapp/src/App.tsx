@@ -17,6 +17,18 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       });
     }
   };
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    tg.BackButton.hide();
+
+    setTimeout(() => {
+      tg.BackButton.hide();
+      (tg as any).BackButton?.hide?.();
+    }, 100);
+    setTimeout(() => tg.BackButton.hide(), 500);
+    setTimeout(() => tg.BackButton.hide(), 1000);
+  }
 
   return (
     <>
