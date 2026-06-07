@@ -40,8 +40,7 @@ export default function PropertyCard({ property, onClick }: Props) {
   const photo = getFirstPhoto();
   const amenities = getAmenities();
 
-  const handleContact = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleContact = async () => {
     const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
     if (!userId) {
       alert('Ошибка: нет данных пользователя');
@@ -53,11 +52,14 @@ export default function PropertyCard({ property, onClick }: Props) {
     }
 
     try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, propertyId: property.id }),
-      });
+      const res = await fetch(
+        'https://realty-bot-prod.onrender.com/api/inquiries',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, propertyId: property.id }),
+        },
+      );
       if (res.ok) {
         alert(
           `✅ Заявка отправлена агенту!\n\nОбъект: ${property.address}\nЦена: ${property.price} zł/мес\n\nСкоро с вами свяжутся!`,

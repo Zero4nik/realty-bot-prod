@@ -50,13 +50,6 @@ export default function App() {
       tg.expand();
       tg.BackButton.hide();
     }
-
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = 'Вы уверены, что хотите покинуть приложение?';
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
   return (
