@@ -10,6 +10,20 @@ import InquiriesPage from './pages/InquiriesPage/InquiriesPage';
 function AppLayout({ children }: { children: React.ReactNode }) {
   const tg = window.Telegram?.WebApp;
 
+  useEffect(() => {
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   const handleClose = () => {
     if (tg) {
       tg.showConfirm('Вы уверены, что хотите покинуть приложение?', (ok) => {
@@ -17,27 +31,12 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       });
     }
   };
-  if (tg) {
-    tg.ready();
-    tg.expand();
-    tg.BackButton.hide();
-    (tg as any).disableClosingConfirmation();
-    (tg as any).disableVerticalSwipes();
-    setTimeout(() => {
-      tg.BackButton.hide();
-      (tg as any).BackButton?.hide?.();
-    }, 100);
-    setTimeout(() => tg.BackButton.hide(), 500);
-    setTimeout(() => tg.BackButton.hide(), 1000);
-  }
 
   return (
     <>
-      <div>
-        <button className="app-close" onClick={handleClose}>
-          ✕
-        </button>
-      </div>
+      <button className="app-close" onClick={handleClose}>
+        ✕
+      </button>
       {children}
     </>
   );

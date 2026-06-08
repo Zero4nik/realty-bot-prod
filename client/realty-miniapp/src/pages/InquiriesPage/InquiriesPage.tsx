@@ -125,12 +125,6 @@ export default function InquiriesPage() {
         <div
           className={`inquiries-list ${listOpen ? 'inquiries-list--open' : ''}`}
         >
-          <button
-            className="inquiries-toggle inquiries-toggle--close"
-            onClick={() => setListOpen(false)}
-          >
-            ✕
-          </button>
           {inquiries.map((inq) => (
             <div
               key={inq.id}
