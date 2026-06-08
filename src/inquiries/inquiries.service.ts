@@ -88,9 +88,9 @@ export class InquiriesService {
       orderBy: { createdAt: 'asc' },
     });
   }
-  async sendMessage(userId: number, inquiryId: number, text: string) {
+  async sendMessage(inquiryId: number, userId: number, text: string) {
     return this.prisma.message.create({
-      data: { userId, inquiryId, text },
+      data: { inquiryId, userId, text },
     });
   }
   async updateStatus(id: number, status: string, amount?: number) {

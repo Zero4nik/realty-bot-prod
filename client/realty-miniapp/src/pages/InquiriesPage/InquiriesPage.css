@@ -188,6 +188,18 @@
   color: #666;
 }
 
+.inquiries-toggle {
+  display: none;
+}
+
+.inquiries-toggle--close {
+  display: none;
+}
+
+.inquiries-overlay {
+  display: none;
+}
+
 @media (min-width: 400px) {
   .inquiries-page {
     padding: 16px;
@@ -255,6 +267,23 @@
     justify-content: center;
     cursor: pointer;
     backdrop-filter: blur(8px);
+  }
+
+  .inquiries-toggle--close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
 
   .inquiries-overlay {
