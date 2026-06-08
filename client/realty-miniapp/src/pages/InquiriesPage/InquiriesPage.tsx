@@ -28,6 +28,7 @@ export default function InquiriesPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
   const userId = tgUser?.id;
+  const [listOpen, setListOpen] = useState(false);
 
   const fetchInquiries = async () => {
     const res = await fetch(
@@ -109,8 +110,27 @@ export default function InquiriesPage() {
     <div className="page inquiries-page">
       <h2>📋 Заявки</h2>
 
+      <button className="inquiries-toggle" onClick={() => setListOpen(true)}>
+        ☰
+      </button>
+
+      {listOpen && (
+        <div
+          className="inquiries-overlay inquiries-overlay--open"
+          onClick={() => setListOpen(false)}
+        />
+      )}
+
       <div className="inquiries-layout">
-        <div className="inquiries-list">
+        <div
+          className={`inquiries-list ${listOpen ? 'inquiries-list--open' : ''}`}
+        >
+          <button
+            className="inquiries-toggle inquiries-toggle--close"
+            onClick={() => setListOpen(false)}
+          >
+            ✕
+          </button>
           {inquiries.map((inq) => (
             <div
               key={inq.id}
@@ -118,6 +138,7 @@ export default function InquiriesPage() {
               onClick={() => {
                 setSelectedId(inq.id);
                 setShowAmount(false);
+                setListOpen(false);
               }}
             >
               <strong>{inq.property?.title || 'Без названия'}</strong>
@@ -132,7 +153,6 @@ export default function InquiriesPage() {
             </div>
           ))}
         </div>
-
         <div className="inquiries-chat">
           {selected ? (
             <>
