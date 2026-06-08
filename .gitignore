@@ -27,3 +27,4 @@ Thumbs.db
 
 prisma/migrations/*/migration_lock.tomlReal-Time-Chat-Application/ 
 Real-Time-Chat-Application/ 
+.vercel

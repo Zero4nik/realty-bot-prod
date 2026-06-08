@@ -27,7 +27,8 @@ export default function InquiriesPage() {
   const [showAmount, setShowAmount] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const userId = tgUser?.id;
+
+  const userId = tgUser?.id || 2; // ← хардкод Димы для теста
   const [listOpen, setListOpen] = useState(false);
 
   const fetchInquiries = async () => {
