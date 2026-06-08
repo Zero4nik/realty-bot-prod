@@ -28,7 +28,7 @@ export class InquiriesController {
   ) {
     return this.inquiriesService.sendMessage(+id, body.userId, body.text);
   }
-  @Put('id/status')
+  @Put(':id/status')
   async updateStatus(
     @Param('id') id: string,
     @Body() body: { status: string; amount?: number },
