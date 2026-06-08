@@ -85,11 +85,13 @@
   background: var(--tg-theme-button-color, #007aff);
   border: none;
   color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  min-height: 44px;
 }
 
 .chat-amount {
@@ -98,18 +100,21 @@
 }
 
 .chat-amount input {
-  width: 100px;
+  width: 120px;
   background: #2a2a2a;
   border: none;
   color: #fff;
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
   outline: none;
+  min-height: 44px;
 }
 
 .chat-amount button {
   background: #34c759;
+  min-height: 44px;
+  padding: 10px 16px;
 }
 
 .chat-messages {

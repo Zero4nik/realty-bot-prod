@@ -65,6 +65,7 @@ export default function InquiriesPage() {
   }, [messages]);
 
   const sendMessage = async () => {
+    console.log('Sending message:', { userId, text, selectedId });
     if (!text.trim() || !selectedId) return;
     await fetch(
       `https://realty-bot-prod.onrender.com/api/inquiries/${selectedId}/messages`,
@@ -81,6 +82,9 @@ export default function InquiriesPage() {
   const updateStatus = async (inquiryId: number, status: string) => {
     const body: any = { status };
     if (status === 'done' && amount) {
+      if (Number(amount) <= 0) {
+        alert('Сумма сделки не может равняться нулю или быть ниже');
+      }
       body.amount = Number(amount);
     }
     await fetch(
