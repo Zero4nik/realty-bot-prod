@@ -6,10 +6,7 @@ import { Telegraf, Context } from 'telegraf';
 
 @Injectable()
 export class InquiriesService {
-  constructor(
-    private prisma: PrismaService,
-    @InjectBot() private bot: Telegraf<Context>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
   async findAll(status?: string) {
     return this.prisma.inquiry.findMany({
       where: status ? { status } : {},
@@ -66,8 +63,15 @@ export class InquiriesService {
       const agentChatId = process.env.AGENT_CHAT_ID;
 
       if (agentChatId) {
-        await this.bot.telegram.sendMessage(agentChatId, message, {
-          parse_mode: 'HTML',
+        const BOT_TOKEN = process.env.BOT_TOKEN;
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: agentChatId,
+            text: message,
+            parse_mode: 'HTML',
+          }),
         });
         console.log(`✅ Уведомление агенту отправлено: заявка #${inquiry.id}`);
       } else {
