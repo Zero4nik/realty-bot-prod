@@ -123,17 +123,13 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  const handleShare = () => {
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.openTelegramLink(
-        `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent('🏠 Найди квартиру в Польше через АрендаPL!')}`,
-      );
-    } else {
-      navigator.clipboard.writeText(referralLink);
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    }
+    });
   };
+
   const saveProfile = async () => {
     await fetch(
       `https://realty-bot-prod.onrender.com/api/users/${user?.telegramId}/profile`,
@@ -219,7 +215,7 @@ export default function ProfilePage() {
             onClick={(e) => (e.target as HTMLInputElement).select()}
           />
         </div>
-        <button className="profile-share-btn" onClick={handleShare}>
+        <button className="profile-share-btn" onClick={handleCopyLink}>
           {copied ? '✅ Скопировано' : '📋 Копировать ссылку'}
         </button>
       </div>
