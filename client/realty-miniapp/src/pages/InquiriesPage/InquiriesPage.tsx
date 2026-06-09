@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './InquiriesPage.css';
-
+import { useNavigate } from 'react-router-dom';
 interface Message {
   id: number;
   text: string;
@@ -19,6 +19,7 @@ interface Inquiry {
 }
 
 export default function InquiriesPage() {
+  const navigate = useNavigate();
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -136,6 +137,12 @@ export default function InquiriesPage() {
               }}
             >
               <strong>{inq.property?.title || 'Без названия'}</strong>
+              <div
+                className="chat-message__avatar"
+                onClick={() => navigate(`/profile/${inq.user?.id}`)}
+              >
+                {inq.user?.firstName?.charAt(0) || '?'}
+              </div>
               <span>👤 {inq.user?.firstName}</span>
               <span className={`inquiry-status inquiry-status--${inq.status}`}>
                 {inq.status === 'new'
@@ -197,13 +204,14 @@ export default function InquiriesPage() {
                     key={msg.id}
                     className={`chat-message ${msg.userId === Number(userId) ? 'chat-message--mine' : ''}`}
                   >
-                    <div className="chat-message__bubble">{msg.text}</div>
-                    <div className="chat-message__time">
-                      {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                    <div
+                      className="chat-message__avatar"
+                      onClick={() => navigate(`/profile/${msg.user?.id}`)}
+                    >
+                      {msg.user?.firstName?.charAt(0) || '?'}
                     </div>
+                    <div className="chat-message__bubble">{msg.text}</div>
+                    <div className="chat-message__time">...</div>
                   </div>
                 ))}
               </div>

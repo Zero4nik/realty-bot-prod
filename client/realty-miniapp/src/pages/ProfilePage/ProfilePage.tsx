@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './ProfilePage.css';
-
+import { useParams } from 'react-router-dom';
 interface UserProfile {
   id: number;
   telegramId: string;
@@ -24,6 +24,7 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState('');
   const [about, setAbout] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const { userId } = useParams<{ userId?: string }>();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -41,7 +42,7 @@ export default function ProfilePage() {
         console.log('🔍 initDataUnsafe:', tg?.initDataUnsafe);
         console.log('🔍 User:', tgUser);
 
-        const telegramId = tgUser?.id;
+        const telegramId = userId || tgUser?.id;
 
         if (!telegramId) {
           console.error('❌ Не удалось получить Telegram ID');

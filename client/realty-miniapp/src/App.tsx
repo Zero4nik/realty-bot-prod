@@ -75,6 +75,14 @@ export default function App() {
           }
         />
         <Route
+          path="/profile/:userId"
+          element={
+            <AppLayout>
+              <ProfilePage />
+            </AppLayout>
+          }
+        />
+        <Route
           path="/dashboard"
           element={
             <AppLayout>
