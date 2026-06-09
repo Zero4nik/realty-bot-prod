@@ -211,7 +211,12 @@ export default function InquiriesPage() {
                       {msg.user?.firstName?.charAt(0) || '?'}
                     </div>
                     <div className="chat-message__bubble">{msg.text}</div>
-                    <div className="chat-message__time">...</div>
+                    <div className="chat-message__time">
+                      {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </div>
                   </div>
                 ))}
               </div>
