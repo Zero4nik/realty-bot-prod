@@ -7,22 +7,9 @@ import DashboardPage from './pages/DashboardsPage/DashboardPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import AdminPage from './pages/Admin/AdminPage';
 import InquiriesPage from './pages/InquiriesPage/InquiriesPage';
+
 function AppLayout({ children }: { children: React.ReactNode }) {
   const tg = window.Telegram?.WebApp;
-
-  useEffect(() => {
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
-
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = '';
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
 
   const handleClose = () => {
     if (tg) {

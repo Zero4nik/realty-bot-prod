@@ -7,9 +7,6 @@ if (window.Telegram?.WebApp) {
   const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
-  (tg as any).disableClosingConfirmation();
-  (tg as any).disableVerticalSwipes();
-  (tg as any).requestFullscreen();
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
