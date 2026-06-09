@@ -220,7 +220,7 @@ export default function ProfilePage() {
           />
         </div>
         <button className="profile-share-btn" onClick={handleShare}>
-          📤 Поделиться ссылкой
+          {copied ? '✅ Скопировано' : '📋 Копировать ссылку'}
         </button>
       </div>
       <div className="profile-section">
