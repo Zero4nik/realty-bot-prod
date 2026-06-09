@@ -10,6 +10,8 @@ datasource db {
 model User {
   id           Int       @id @default(autoincrement())
   telegramId   String    @unique
+  phone        String?
+  about        String?
   username     String?
   role         String    @default("user")
   referralCode String    @unique @default(uuid())

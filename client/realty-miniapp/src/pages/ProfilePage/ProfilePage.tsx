@@ -21,6 +21,9 @@ export default function ProfilePage() {
   const [referralLink, setReferralLink] = useState('');
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [about, setAbout] = useState('');
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -138,6 +141,17 @@ export default function ProfilePage() {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+  const saveProfile = async () => {
+    await fetch(
+      `https://realty-bot-prod.onrender.com/api/users/${user?.telegramId}/profile`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, about }),
+      },
+    );
+    setEditMode(false);
+  };
 
   if (loading) {
     return (
@@ -219,26 +233,31 @@ export default function ProfilePage() {
           📤 Поделиться ссылкой
         </button>
       </div>
-
-      {/* Статистика */}
       <div className="profile-section">
-        <h3 className="profile-section-title">📊 Статистика</h3>
-        <div className="profile-stats">
-          <div className="profile-stat">
-            <span className="profile-stat-value">{user.inquiriesCount}</span>
-            <span className="profile-stat-label">Заявок</span>
+        <h3>О себе</h3>
+        {editMode ? (
+          <>
+            <input
+              placeholder="Телефон"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <textarea
+              placeholder="Пожелания по поиску"
+              value={about}
+              onChange={(e) => setAbout(e.target.value)}
+              rows={3}
+            />
+            <button onClick={saveProfile}>Сохранить</button>
+          </>
+        ) : (
+          <div onClick={() => setEditMode(true)}>
+            <p>📱 {phone || 'Не указан'}</p>
+            <p>📝 {about || 'Не указаны'}</p>
+            <button>Редактировать</button>
           </div>
-          <div className="profile-stat">
-            <span className="profile-stat-value">{user.referralCount}</span>
-            <span className="profile-stat-label">Рефералов</span>
-          </div>
-          <div className="profile-stat">
-            <span className="profile-stat-value">{user.dealsCount}</span>
-            <span className="profile-stat-label">Сделок</span>
-          </div>
-        </div>
+        )}
       </div>
-
       <BottomNav activeTab="profile" />
     </div>
   );

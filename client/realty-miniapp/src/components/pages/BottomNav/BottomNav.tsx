@@ -13,7 +13,7 @@ const NAV_ITEMS = [
   {
     id: 'inquiries' as const,
     emoji: '💬',
-    label: 'Заявки',
+    label: 'Чат',
     path: '/inquiries',
   },
   { id: 'profile' as const, emoji: '👤', label: 'Профиль', path: '/profile' },

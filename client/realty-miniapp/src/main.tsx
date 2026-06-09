@@ -7,6 +7,7 @@ if (window.Telegram?.WebApp) {
   const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
+  tg.requestFullscreen();
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

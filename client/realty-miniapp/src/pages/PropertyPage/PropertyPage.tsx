@@ -32,6 +32,7 @@ export default function PropertyPage() {
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const [fullscreenPhoto, setFullscreenPhoto] = useState<string | null>(null);
 
+
   const nextPhoto = () => {
     setCurrentPhoto((prev) => (prev + 1) % photoUrls.length);
   };
@@ -123,6 +124,13 @@ export default function PropertyPage() {
     photoUrls = property.photos ? [property.photos] : [];
   }
 
+  useEffect(() => {
+  const viewed = JSON.parse(localStorage.getItem('viewed') || '[]');
+  if (!viewed.includes(Number(id))) {
+    viewed.push(Number(id));
+    localStorage.setItem('viewed', JSON.stringify(viewed));
+  }
+}, [id]);
   return (
     <div className="page property-page">
       {/* Шапка: Назад слева, Закрыть справа */}
@@ -131,7 +139,7 @@ export default function PropertyPage() {
           ← Назад к поиску
         </button>
       </div>
-
+      
       <div className="property-gallery">
         {photoUrls.length > 0 ? (
           <>

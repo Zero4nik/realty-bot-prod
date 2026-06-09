@@ -1,5 +1,6 @@
 import type { Property } from '../../../types/property';
 import './ProtertyCard.css';
+import { useEffect, useState } from 'react';
 
 interface Props {
   property: Property;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export default function PropertyCard({ property, onClick }: Props) {
+  const [viewed, setViewed] = useState(false);
   const getFirstPhoto = (): string => {
     try {
       const photosArray = JSON.parse(property.photos || '[]');
@@ -73,9 +75,13 @@ export default function PropertyCard({ property, onClick }: Props) {
       alert('Ошибка соединения с сервером');
     }
   };
-
+  useEffect(() => {
+    const viewedIds = JSON.parse(localStorage.getItem('viewed') || '[]');
+    setViewed(viewedIds.includes(property.id));
+  }, [property.id]);
   return (
     <div className="property-card" onClick={onClick}>
+      <div>{viewed && <div className="viewed-badge">✅ ПРОСМОТРЕНО</div>}</div>
       <img className="property-card__photo" src={photo} alt={property.title} />
       <div className="property-card__info">
         <div className="property-card__price">

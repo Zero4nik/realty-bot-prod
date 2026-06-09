@@ -8,10 +8,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('api/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private prisma: PrismaService,
+  ) {}
+
   @Post()
   async create(
     @Body()
@@ -53,5 +58,15 @@ export class UsersController {
     @Body() body: { role?: string },
   ) {
     return this.usersService.updateRole(telegramId, body.role);
+  }
+  @Put(':telegramId/profile')
+  async updateProfile(
+    @Param('telegramId') telegramId: string,
+    @Body() body: { phone?: string; about?: string },
+  ) {
+    return this.prisma.user.update({
+      where: { telegramId },
+      data: { phone: body.phone, about: body.about },
+    });
   }
 }

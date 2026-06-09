@@ -108,7 +108,7 @@ export default function InquiriesPage() {
 
   return (
     <div className="page inquiries-page">
-      <h2>📋 Заявки</h2>
+      <h2>📋 Чат</h2>
 
       <button className="inquiries-toggle" onClick={() => setListOpen(true)}>
         ☰

@@ -6,6 +6,7 @@
 }
 
 .property-card {
+  position: relative;
   background: #1c1c1c;
   border-radius: 14px;
   overflow: hidden;
@@ -84,6 +85,20 @@
   background: #1a8ad4;
 }
 
+.viewed-badge {
+  background: #34c759;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 5;
+  letter-spacing: 0.3px;
+}
+
 @media (min-width: 480px) {
   .property-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -101,6 +116,14 @@
 
   .property-card__address {
     font-size: 13px;
+  }
+
+  .viewed-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    top: 8px;
+    right: 8px;
   }
 }
 
@@ -122,6 +145,14 @@
   .property-card__button {
     font-size: 13px;
     padding: 10px 0;
+  }
+
+  .viewed-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    top: 10px;
+    right: 10px;
   }
 }
 

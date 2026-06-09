@@ -73,7 +73,7 @@ export default function HomePage() {
       emoji: '🏠',
       title: 'Аренда',
       desc: 'Квартиры и дома на длительный срок',
-      path: '/catalog',
+      path: '/catalog?filter=open',
       available: true,
     },
     {
