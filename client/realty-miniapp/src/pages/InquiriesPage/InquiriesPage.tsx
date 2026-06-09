@@ -67,6 +67,7 @@ export default function InquiriesPage() {
   }, [messages]);
 
   const sendMessage = async () => {
+    alert('Sending: ' + text);
     console.log('Sending message:', { userId, text, selectedId });
     if (!text.trim() || !selectedId) return;
     await fetch(
