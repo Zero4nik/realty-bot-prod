@@ -21,7 +21,7 @@ export class BotService {
         [
           Markup.button.webApp(
             'Выбрать квартиру',
-            'https://realty-bot-prod-ee3xk5rxc-zero4niks-projects.vercel.app',
+            'https://realty-bot-prod.vercel.app',
           ),
         ],
         [
