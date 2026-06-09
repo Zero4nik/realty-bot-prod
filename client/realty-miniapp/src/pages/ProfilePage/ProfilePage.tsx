@@ -123,13 +123,6 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(referralLink).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
   const handleShare = () => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.openTelegramLink(
@@ -225,9 +218,6 @@ export default function ProfilePage() {
             readOnly
             onClick={(e) => (e.target as HTMLInputElement).select()}
           />
-          <button className="profile-ref-copy" onClick={handleCopyLink}>
-            {copied ? '✅' : '📋'}
-          </button>
         </div>
         <button className="profile-share-btn" onClick={handleShare}>
           📤 Поделиться ссылкой
