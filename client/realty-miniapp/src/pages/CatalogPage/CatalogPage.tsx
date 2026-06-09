@@ -73,7 +73,12 @@ export default function CatalogPage() {
   useEffect(() => {
     fetchProperties();
   }, [fetchProperties]);
-
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('filter') === 'open') {
+      setFilterOpen(true);
+    }
+  }, []);
   const handleApplyFilters = useCallback(
     (filters: Filters) => {
       setActiveFilters(filters);
