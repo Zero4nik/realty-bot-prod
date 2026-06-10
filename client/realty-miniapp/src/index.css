@@ -19,7 +19,7 @@ body {
 }
 
 body > #root > div {
-  padding-top: 50px !important;
+  padding-top: 100px !important;
 }
 
 .profile-page,
@@ -29,7 +29,7 @@ body > #root > div {
 .dashboard-page,
 .home-categories,
 .property-grid {
-  padding-top: 50px !important;
+  padding-top: 100px !important;
 }
 
 .app {

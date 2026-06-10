@@ -29,8 +29,11 @@ export default function InquiriesPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-  const userId = tgUser?.id;
-  const [listOpen, setListOpen] = useState(false);
+  const initData = (window.Telegram?.WebApp as any)?.initData || '';
+  const params = new URLSearchParams(initData);
+  const userStr = params.get('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const userId = user?.id || tgUser?.id;
 
   const fetchInquiries = async () => {
     const res = await fetch(
