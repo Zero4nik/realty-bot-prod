@@ -95,11 +95,10 @@ export default function PropertyCard({ property, onClick }: Props) {
   }, [property.id]);
   return (
     <div className="property-card" onClick={onClick}>
-      <div>{viewed && <div className="viewed-badge">✅ ПРОСМОТРЕНО</div>}</div>
-      <div>
+      <div className="property-card__top-badges">
+        {viewed && <div className="viewed-badge">✅ ПРОСМОТРЕНО</div>}
         <div className="property-card__date">
-          {' '}
-          📅 {formatDate(property.createdAt)}{' '}
+          📅 {formatDate(property.createdAt)}
         </div>
       </div>
 

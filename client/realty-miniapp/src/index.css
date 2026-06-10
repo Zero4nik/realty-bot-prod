@@ -55,5 +55,5 @@ body {
 .admin-page,
 .inquiries-page,
 .dashboard-page {
-  padding-top: 50px;
+  padding-top: 50px !important;
 }

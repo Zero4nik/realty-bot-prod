@@ -29,7 +29,7 @@ export default function InquiriesPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-  const userId = tgUser?.id || 2; // ← хардкод Димы для теста
+  const userId = tgUser?.id;
   const [listOpen, setListOpen] = useState(false);
 
   const fetchInquiries = async () => {
@@ -74,7 +74,7 @@ export default function InquiriesPage() {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: 2, text }),
+        body: JSON.stringify({ userId: Number(userId), text }),
       },
     );
     setText('');

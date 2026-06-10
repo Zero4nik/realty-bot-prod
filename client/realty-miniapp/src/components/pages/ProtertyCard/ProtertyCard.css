@@ -21,6 +21,18 @@
   border-color: #2ea6ff;
 }
 
+.property-card__top-badges {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 5;
+  pointer-events: none;
+}
+
 .property-card__photo {
   width: 100%;
   height: 180px;
@@ -86,39 +98,36 @@
 }
 
 .viewed-badge {
+  position: static;
   background: #34c759;
   color: #fff;
   font-size: 10px;
   font-weight: 700;
   padding: 3px 6px;
   border-radius: 4px;
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  z-index: 5;
   letter-spacing: 0.3px;
+  pointer-events: none;
 }
+
 .property-card__date {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.6);
   font-size: 10px;
   padding: 3px 8px;
   border-radius: 20px;
-  display: inline-block;
-  margin-bottom: 6px;
+  pointer-events: none;
 }
 
 @media (min-width: 480px) {
   .property-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 0 4px;
   }
-  @media (min-width: 400px) {
-    .property-card__date {
-      font-size: 11px;
-      padding: 4px 10px;
-    }
+
+  .property-card__top-badges {
+    top: 8px;
+    left: 8px;
+    right: 8px;
   }
 
   .property-card__photo {
@@ -137,8 +146,11 @@
     font-size: 11px;
     padding: 4px 8px;
     border-radius: 6px;
-    top: 8px;
-    right: 8px;
+  }
+
+  .property-card__date {
+    font-size: 11px;
+    padding: 4px 10px;
   }
 }
 
@@ -147,6 +159,12 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     padding: 0 8px;
+  }
+
+  .property-card__top-badges {
+    top: 10px;
+    left: 10px;
+    right: 10px;
   }
 
   .property-card__photo {
@@ -166,8 +184,6 @@
     font-size: 12px;
     padding: 5px 10px;
     border-radius: 6px;
-    top: 10px;
-    right: 10px;
   }
 }
 
