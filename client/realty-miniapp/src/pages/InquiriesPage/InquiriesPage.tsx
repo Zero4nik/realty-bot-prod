@@ -85,7 +85,7 @@ export default function InquiriesPage() {
     const body: any = { status };
     if (status === 'done' && amount) {
       if (Number(amount) <= 0) {
-        alert('Сумма сделки не может равняться нулю или быть ниже');
+        alert('Сумма сделки не может равняться нулю или быть ниже.');
       }
       body.amount = Number(amount);
     }
