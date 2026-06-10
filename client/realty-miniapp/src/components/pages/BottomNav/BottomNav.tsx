@@ -3,7 +3,13 @@ import './BottomNav.css';
 import { useState, useEffect } from 'react';
 
 interface BottomNavProps {
-  activeTab: 'home' | 'catalog' | 'profile' | 'dashboard' | 'inquiries';
+  activeTab:
+    | 'home'
+    | 'catalog'
+    | 'profile'
+    | 'dashboard'
+    | 'inquiries'
+    | 'admin';
   isAdmin?: boolean;
 }
 

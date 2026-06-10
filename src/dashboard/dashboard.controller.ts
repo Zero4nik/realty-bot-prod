@@ -1,4 +1,4 @@
-import { Get, Controller, UseGuards } from '@nestjs/common';
+import { Get, Controller, UseGuards, Headers } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { adminGuard } from 'src/auth/admin.guard';
 
@@ -8,7 +8,7 @@ export class DashboardController {
 
   @Get()
   @UseGuards(adminGuard)
-  async getStats() {
-    return this.dashboardService.getStats();
+  async getStats(@Headers('x-user-id') userId: string) {
+    return this.dashboardService.getStats(userId);
   }
 }

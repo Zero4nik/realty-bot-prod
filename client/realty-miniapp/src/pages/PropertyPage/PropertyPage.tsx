@@ -83,6 +83,8 @@ export default function PropertyPage() {
         },
       );
       if (res.ok) {
+        const data = await res.json();
+        navigate(`/inquiries?inquiry=${data.id}`);
         alert(
           `✅ Заявка отправлена агенту!\n\nОбъект: ${property.address}\nЦена: ${property.price} zł/мес\n\nСкоро с вами свяжутся!`,
         );

@@ -489,7 +489,7 @@ export default function AdminPage() {
         ))}
       </div>
 
-      <BottomNav activeTab="home" />
+      <BottomNav activeTab="admin" />
     </div>
   );
 }

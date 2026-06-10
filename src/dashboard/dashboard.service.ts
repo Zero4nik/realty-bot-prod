@@ -5,7 +5,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
-  async getStats() {
+  async getStats(userId?: string) {
+    const isOwner = userId === '6537896588';
     const [
       totalUsers,
       totalProperties,
@@ -96,7 +97,7 @@ export class DashboardService {
 
       // Финансы
       totalCommission: aggregation._sum.commission || 0,
-      totalYourPercent: aggregation._sum.yourPercent || 0,
+      totalYourPercent: isOwner ? aggregation._sum.yourPercent || 0 : 0,
 
       // Последние заявки (для таблицы в админке)
       recentInquiries: recentInquiries.map((inq) => ({
