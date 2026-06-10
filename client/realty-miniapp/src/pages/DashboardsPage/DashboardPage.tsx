@@ -30,7 +30,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const userId =
     window.Telegram?.WebApp?.initDataUnsafe?.user?.id || '6537896588';
 
@@ -133,10 +133,6 @@ export default function DashboardPage() {
             <span>🆕 Новые</span>
             <strong>{stats.newInquiries}</strong>
           </div>
-          <div className="dashboard-status dashboard-status--progress">
-            <span>🔄 В работе</span>
-            <strong>{stats.inProgressInquiries}</strong>
-          </div>
           <div className="dashboard-status dashboard-status--closed">
             <span>✅ Закрыто</span>
             <strong>{stats.closedInquiries}</strong>
@@ -175,11 +171,7 @@ export default function DashboardPage() {
                   <span
                     className={`dashboard-inquiry__status dashboard-inquiry__status--${inq.status}`}
                   >
-                    {inq.status === 'new'
-                      ? '🆕 Новая'
-                      : inq.status === 'in_progress'
-                        ? '🔄 В работе'
-                        : '✅ Закрыта'}
+                    {inq.status === 'new' ? '🆕 Новая' : '✅ Закрыта'}
                   </span>
                   <span className="dashboard-inquiry__date">
                     {new Date(inq.createdAt).toLocaleString('ru-RU')}

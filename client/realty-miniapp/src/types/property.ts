@@ -17,4 +17,5 @@ export interface Property {
   photos: string;
   description: string | null;
   address: string;
+  createdAt: string;
 }

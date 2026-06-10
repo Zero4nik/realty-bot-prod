@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { Property } from '../../../types/property';
 import './ProtertyCard.css';
 import { useEffect, useState } from 'react';
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function PropertyCard({ property, onClick }: Props) {
+  const navigate = useNavigate();
   const [viewed, setViewed] = useState(false);
   const getFirstPhoto = (): string => {
     try {
@@ -41,7 +43,17 @@ export default function PropertyCard({ property, onClick }: Props) {
 
   const photo = getFirstPhoto();
   const amenities = getAmenities();
+  const formatDate = (dateStr: string): string => {
+    const now = Date.now();
+    const date = new Date(dateStr).getTime();
+    const diff = Math.floor((now - date) / 1000);
 
+    if (diff < 60) return '1 минуту назад';
+    if (diff < 3600) return `${Math.floor(diff / 60)} мин. назад`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} ч. назад`;
+    if (diff < 259200) return `${Math.floor(diff / 86400)} дн. назад`;
+    return new Date(dateStr).toLocaleDateString('ru-RU');
+  };
   const handleContact = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
@@ -64,6 +76,8 @@ export default function PropertyCard({ property, onClick }: Props) {
         },
       );
       if (res.ok) {
+        const data = await res.json();
+        navigate(`/inquiries?inquiry=${data.id}`);
         alert(
           `✅ Заявка отправлена агенту!\n\nОбъект: ${property.address}\nЦена: ${property.price} zł/мес\n\nСкоро с вами свяжутся!`,
         );
@@ -82,6 +96,9 @@ export default function PropertyCard({ property, onClick }: Props) {
   return (
     <div className="property-card" onClick={onClick}>
       <div>{viewed && <div className="viewed-badge">✅ ПРОСМОТРЕНО</div>}</div>
+      <div className="property-card__date">
+        📅 {formatDate(property.createdAt)}
+      </div>
       <img className="property-card__photo" src={photo} alt={property.title} />
       <div className="property-card__info">
         <div className="property-card__price">
