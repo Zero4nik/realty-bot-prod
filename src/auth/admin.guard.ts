@@ -5,29 +5,35 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
 @Injectable()
 export class adminGuard implements CanActivate {
   private readonly logger = new Logger(adminGuard.name);
 
-  canActivate(context: ExecutionContext): boolean {
-    //  ПОЛУЧАЕМ ОБЪЕКТ ЗАПРОСА
+  constructor(private prisma: PrismaService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    //В Telegram Mini App ID передаётся в initData,мы будем использовать ЗАГОЛОВОК x-user-id
     const userId = request.headers['x-user-id'];
 
-    //  ПОЛУЧАЕМ СПИСОК АДМИНОВ ИЗ .env
-    const adminIdsEnv = process.env.ADMIN_IDS || '';
-    const adminIds = adminIdsEnv
-      .split(',')
-      .map((id) => id.trim())
-      .filter((id) => id.length > 0); // убираем пустые строки
-    // ПРОВЕРЯЕМ: есть ли userId в списке админов?
-    if (!userId || !adminIds.includes(userId)) {
+    if (!userId) {
+      throw new ForbiddenException(
+        'Доступ запрещён. Только для администраторов.',
+      );
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { telegramId: String(userId) },
+    });
+
+    if (!user || user.role !== 'admin') {
       this.logger.warn(`ДОСТУП ЗАПРЕЩЁН: userId=${userId} не админ`);
       throw new ForbiddenException(
         'Доступ запрещён. Только для администраторов.',
       );
     }
+
     this.logger.log(`Админ доступ разрешён: userId=${userId}`);
     return true;
   }
