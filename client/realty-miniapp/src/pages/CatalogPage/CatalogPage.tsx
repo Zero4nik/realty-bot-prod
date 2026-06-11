@@ -49,7 +49,7 @@ export default function CatalogPage() {
         if (search) params.append('search', search);
 
         const queryString = params.toString();
-        const url = `https://realty-bot-prod.onrender.com/api/properties${queryString ? `?${queryString}` : ''}`;
+        const url = `https://realty-bot-prod-1.onrender.com/api/properties${queryString ? `?${queryString}` : ''}`;
 
         console.log('🔍 Запрос к API:', url);
         const response = await fetch(url);

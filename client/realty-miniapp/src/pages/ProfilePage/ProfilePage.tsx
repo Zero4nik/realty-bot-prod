@@ -62,7 +62,7 @@ export default function ProfilePage() {
 
         // Пробуем получить существующего пользователя
         const response = await fetch(
-          `https://realty-bot-prod.onrender.com/api/users/${telegramId}`,
+          `https://realty-bot-prod-1.onrender.com/api/users/${telegramId}`,
         );
 
         console.log('📡 Response status:', response.status);
@@ -72,7 +72,7 @@ export default function ProfilePage() {
 
           // Создаем нового пользователя
           const createRes = await fetch(
-            'https://realty-bot-prod.onrender.com/api/users',
+            'https://realty-bot-prod-1.onrender.com/api/users',
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -137,7 +137,7 @@ export default function ProfilePage() {
 
   const saveProfile = async () => {
     await fetch(
-      `https://realty-bot-prod.onrender.com/api/users/${user?.telegramId}/profile`,
+      `https://realty-bot-prod-1.onrender.com/api/users/${user?.telegramId}/profile`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

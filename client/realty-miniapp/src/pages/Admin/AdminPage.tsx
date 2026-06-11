@@ -63,7 +63,7 @@ export default function AdminPage() {
     setError(null);
     try {
       const res = await fetch(
-        'https://realty-bot-prod.onrender.com/api/properties?showAll=true',
+        'https://realty-bot-prod-1.onrender.com/api/properties?showAll=true',
         {
           headers: { 'x-user-id': telegramId || '' },
         },
@@ -134,7 +134,7 @@ export default function AdminPage() {
       });
 
       const res = await fetch(
-        'https://realty-bot-prod.onrender.com/api/properties',
+        'https://realty-bot-prod-1.onrender.com/api/properties',
         {
           method: 'POST',
           headers: {
@@ -162,10 +162,13 @@ export default function AdminPage() {
   const handleDelete = async (id: number) => {
     if (!confirm('Удалить квартиру безвозвратно?')) return;
     try {
-      await fetch(`https://realty-bot-prod.onrender.com/api/properties/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-user-id': telegramId || '' },
-      });
+      await fetch(
+        `https://realty-bot-prod-1.onrender.com/api/properties/${id}`,
+        {
+          method: 'DELETE',
+          headers: { 'x-user-id': telegramId || '' },
+        },
+      );
       loadProperties();
     } catch (err) {
       alert('❌ Ошибка при удалении');

@@ -51,7 +51,7 @@ export default function InquiriesPage() {
 
   const fetchInquiries = async () => {
     const res = await fetch(
-      'https://realty-bot-prod.onrender.com/api/inquiries',
+      'https://realty-bot-prod-1.onrender.com/api/inquiries',
       {
         headers: { 'x-user-id': String(userId) },
       },
@@ -62,7 +62,7 @@ export default function InquiriesPage() {
 
   const fetchMessages = async (inquiryId: number) => {
     const res = await fetch(
-      `https://realty-bot-prod.onrender.com/api/inquiries/${inquiryId}/messages`,
+      `https://realty-bot-prod-1.onrender.com/api/inquiries/${inquiryId}/messages`,
     );
     const data = await res.json();
     setMessages(data);
@@ -85,7 +85,7 @@ export default function InquiriesPage() {
   const sendMessage = async () => {
     if (!text.trim() || !selectedId) return;
     await fetch(
-      `https://realty-bot-prod.onrender.com/api/inquiries/${selectedId}/messages`,
+      `https://realty-bot-prod-1.onrender.com/api/inquiries/${selectedId}/messages`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -106,7 +106,7 @@ export default function InquiriesPage() {
       body.amount = Number(amount);
     }
     await fetch(
-      `https://realty-bot-prod.onrender.com/api/inquiries/${inquiryId}/status`,
+      `https://realty-bot-prod-1.onrender.com/api/inquiries/${inquiryId}/status`,
       {
         method: 'PUT',
         headers: {

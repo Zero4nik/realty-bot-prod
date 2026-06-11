@@ -44,7 +44,7 @@ export default function BottomNav({
       return;
     }
 
-    fetch(`https://realty-bot-prod.onrender.com/api/users/${telegramId}`)
+    fetch(`https://realty-bot-prod-1.onrender.com/api/users/${telegramId}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();

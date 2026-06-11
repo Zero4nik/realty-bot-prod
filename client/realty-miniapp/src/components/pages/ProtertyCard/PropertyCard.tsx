@@ -68,7 +68,7 @@ export default function PropertyCard({ property, onClick }: Props) {
 
     try {
       const res = await fetch(
-        'https://realty-bot-prod.onrender.com/api/inquiries',
+        'https://realty-bot-prod-1.onrender.com/api/inquiries',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

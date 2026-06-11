@@ -32,7 +32,7 @@ export default function HomePage() {
     }
 
     // Загружаем из API
-    fetch(`https://realty-bot-prod.onrender.com/api/users/${telegramId}`)
+    fetch(`https://realty-bot-prod-1.onrender.com/api/users/${telegramId}`)
       .then((res) => {
         if (!res.ok) throw new Error('User not found');
         return res.json();
@@ -44,7 +44,7 @@ export default function HomePage() {
       .catch(() => {
         // Если юзера нет — создаём
         const tgUser = tg?.initDataUnsafe?.user;
-        return fetch('https://realty-bot-prod.onrender.com/api/users', {
+        return fetch('https://realty-bot-prod-1.onrender.com/api/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
