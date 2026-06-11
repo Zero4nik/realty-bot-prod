@@ -30,9 +30,9 @@ export default function InquiriesPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const [listOpen, setListOpen] = useState(false);
 
-  const getUserId = (): number => {
+  const getUserId = (): number | undefined => {
     const tg = window.Telegram?.WebApp;
-    if (!tg) return 6537896588;
+    if (!tg) return undefined;
 
     try {
       const initData = (tg as any).initData || '';
@@ -44,13 +44,7 @@ export default function InquiriesPage() {
       }
     } catch (e) {}
 
-    const tgUser = tg.initDataUnsafe?.user;
-    if (tgUser?.id) {
-      const adminIds = [6537896588, 7282055931, 7816406376];
-      return adminIds.includes(tgUser.id) ? tgUser.id : 6537896588;
-    }
-
-    return 6537896588;
+    return tg.initDataUnsafe?.user?.id;
   };
 
   const userId = getUserId();
