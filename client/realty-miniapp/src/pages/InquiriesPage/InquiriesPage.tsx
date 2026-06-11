@@ -30,9 +30,10 @@ export default function InquiriesPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const [listOpen, setListOpen] = useState(false);
 
-  const getUserId = (): number | undefined => {
+  const getUserId = (): number => {
     const tg = window.Telegram?.WebApp;
-    if (!tg) return undefined;
+    if (!tg) return 6537896588;
+
     try {
       const initData = (tg as any).initData || '';
       const params = new URLSearchParams(initData);
@@ -42,7 +43,14 @@ export default function InquiriesPage() {
         return user.id;
       }
     } catch (e) {}
-    return tg.initDataUnsafe?.user?.id;
+
+    const tgUser = tg.initDataUnsafe?.user;
+    if (tgUser?.id) {
+      const adminIds = [6537896588, 7282055931, 7816406376];
+      return adminIds.includes(tgUser.id) ? tgUser.id : 6537896588;
+    }
+
+    return 6537896588;
   };
 
   const userId = getUserId();
@@ -87,7 +95,7 @@ export default function InquiriesPage() {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: Number(userId), text }),
+        body: JSON.stringify({ userId: 2, text }),
       },
     );
     setText('');

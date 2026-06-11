@@ -27,8 +27,8 @@ export class InquiriesService {
         property: {
           select: { id: true, title: true, price: true, city: true },
         },
-        orderBy: { createdAt: 'desc' },
       },
+      orderBy: { createdAt: 'desc' },
     });
   }
   async create(data: { userId: number; propertyId: number }) {
