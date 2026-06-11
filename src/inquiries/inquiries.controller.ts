@@ -36,9 +36,10 @@ export class InquiriesController {
   @Post(':id/messages')
   async sendMessage(
     @Param('id') id: string,
-    @Body() body: { userId: number; text: string },
+    @Headers('x-user-id') telegramId: string,
+    @Body() body: { text: string },
   ) {
-    return this.inquiriesService.sendMessage(+id, body.userId, body.text);
+    return this.inquiriesService.sendMessage(+id, telegramId, body.text);
   }
   @Put(':id/status')
   async updateStatus(

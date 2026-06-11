@@ -1,5 +1,5 @@
 import { Message } from './../../node_modules/.prisma/client/index.d';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf, Context } from 'telegraf';
@@ -106,9 +106,15 @@ export class InquiriesService {
       orderBy: { createdAt: 'asc' },
     });
   }
-  async sendMessage(inquiryId: number, userId: number, text: string) {
+  async sendMessage(inquiryId: number, telegramId: string, text: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { telegramId },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return this.prisma.message.create({
-      data: { inquiryId, userId, text },
+      data: { inquiryId, userId: user.id, text },
     });
   }
   async updateStatus(id: number, status: string, amount?: number) {

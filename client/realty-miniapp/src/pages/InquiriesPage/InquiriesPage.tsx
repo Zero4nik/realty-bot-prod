@@ -30,30 +30,24 @@ export default function InquiriesPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const [listOpen, setListOpen] = useState(false);
 
-  const getUserId = (): number | undefined => {
-    const tg = window.Telegram?.WebApp;
-    if (!tg) return undefined;
+  const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+  const [currentUserDbId, setCurrentUserDbId] = useState<number | null>(null);
 
-    try {
-      const initData = (tg as any).initData || '';
-      const params = new URLSearchParams(initData);
-      const userStr = params.get('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        return user.id;
-      }
-    } catch (e) {}
-
-    return tg.initDataUnsafe?.user?.id;
-  };
-
-  const userId = getUserId();
+  useEffect(() => {
+    if (!telegramId) return;
+    fetch(`https://realty-bot-prod-1.onrender.com/api/users/${telegramId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((user) => {
+        if (user?.id) setCurrentUserDbId(user.id);
+      })
+      .catch(() => {});
+  }, [telegramId]);
 
   const fetchInquiries = async () => {
     const res = await fetch(
       'https://realty-bot-prod-1.onrender.com/api/inquiries',
       {
-        headers: { 'x-user-id': String(userId) },
+        headers: { 'x-user-id': String(telegramId) },
       },
     );
     const data = await res.json();
@@ -88,8 +82,11 @@ export default function InquiriesPage() {
       `https://realty-bot-prod-1.onrender.com/api/inquiries/${selectedId}/messages`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: 2, text }),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': String(telegramId),
+        },
+        body: JSON.stringify({ text }),
       },
     );
     setText('');
@@ -111,7 +108,7 @@ export default function InquiriesPage() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': String(userId),
+          'x-user-id': String(telegramId),
         },
         body: JSON.stringify(body),
       },
@@ -204,7 +201,7 @@ export default function InquiriesPage() {
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`chat-message ${msg.userId === Number(userId) ? 'chat-message--mine' : ''}`}
+                    className={`chat-message ${msg.userId === currentUserDbId ? 'chat-message--mine' : ''}`}
                   >
                     <div
                       className="chat-message__avatar"
