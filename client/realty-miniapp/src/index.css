@@ -18,10 +18,6 @@ body {
   min-height: 100vh;
 }
 
-body > #root > div {
-  padding-top: 100px !important;
-}
-
 @media (max-width: 600px) {
   .profile-page,
   .property-page,
@@ -29,8 +25,9 @@ body > #root > div {
   .inquiries-page,
   .dashboard-page,
   .home-categories,
-  .property-grid {
-    padding-top: 70px !important;
+  .property-grid,
+  body > #root > div {
+    padding-top: 100px !important;
   }
 }
 

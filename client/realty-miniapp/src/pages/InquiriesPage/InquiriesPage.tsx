@@ -197,7 +197,7 @@ export default function InquiriesPage() {
               {/* Анкета квартиры при открытии чата */}
               <div className="chat-inquiry-card">
                 <strong>🏠 {selected.property?.title}</strong>
-                <p>📍 {selected.property?.city}</p>
+                <p>📍 {`Город:${selected.property?.city}`}</p>
                 <p>💰 {selected.property?.price} zł/мес</p>
                 <p>👤 Клиент: {selected.user?.firstName}</p>
               </div>
