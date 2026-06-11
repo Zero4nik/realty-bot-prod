@@ -7,14 +7,28 @@ import { Telegraf, Context } from 'telegraf';
 @Injectable()
 export class InquiriesService {
   constructor(private prisma: PrismaService) {}
-  async findAll(status?: string) {
+  async findAll(status?: string, userId?: string) {
+    const where: any = {};
+
+    if (status) where.status = status;
+
+    if (userId) {
+      const user = await this.prisma.user.findUnique({
+        where: { telegramId: userId },
+      });
+      if (user?.role !== 'admin') {
+        where.userId = user?.id;
+      }
+    }
     return this.prisma.inquiry.findMany({
-      where: status ? { status } : {},
+      where,
       include: {
         user: { select: { id: true, firstName: true, username: true } },
-        property: { select: { id: true, title: true, price: true } },
+        property: {
+          select: { id: true, title: true, price: true, city: true },
+        },
+        orderBy: { createdAt: 'desc' },
       },
-      orderBy: { createdAt: 'desc' },
     });
   }
   async create(data: { userId: number; propertyId: number }) {

@@ -1,12 +1,24 @@
-import { Controller, Post, Body, Get, Query, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  Param,
+  Put,
+  Headers,
+} from '@nestjs/common';
 import { InquiriesService } from './inquiries.service';
 @Controller('api/inquiries')
 export class InquiriesController {
   constructor(private readonly inquiriesService: InquiriesService) {}
 
   @Get()
-  async findAll(@Query('status') status?: string) {
-    return this.inquiriesService.findAll(status);
+  async findAll(
+    @Query('status') status?: string,
+    @Headers('x-user-id') userId?: string,
+  ) {
+    return this.inquiriesService.findAll(status, userId);
   }
 
   @Post()
