@@ -301,9 +301,6 @@
   .inquiries-layout {
     display: flex;
   }
-  .inquiries-toggle {
-    display: flex;
-  }
 
   .inquiries-list {
     width: 30%;
