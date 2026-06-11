@@ -27,12 +27,14 @@ export default function InquiriesPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState('');
   const [amount, setAmount] = useState('');
-  const [, setShowAmount] = useState(false);
+  const [brokerPercent, setBrokerPercent] = useState('0');
+  const [showAmount, setShowAmount] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const [listOpen, setListOpen] = useState(false);
 
   const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
   const [currentUserDbId, setCurrentUserDbId] = useState<number | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (!telegramId) return;
@@ -40,6 +42,7 @@ export default function InquiriesPage() {
       .then((res) => (res.ok ? res.json() : null))
       .then((user) => {
         if (user?.id) setCurrentUserDbId(user.id);
+        if (user?.role === 'admin') setIsAdmin(true);
       })
       .catch(() => {});
   }, [telegramId]);
@@ -104,16 +107,31 @@ export default function InquiriesPage() {
     fetchMessages(selectedId);
   };
 
+  const resetCompleteForm = () => {
+    setShowAmount(false);
+    setAmount('');
+    setBrokerPercent('0');
+  };
+
   const updateStatus = async (inquiryId: number, status: string) => {
-    const body: any = { status };
-    if (status === 'done' && amount) {
+    const body: { status: string; amount?: number; brokerPercent?: number } =
+      { status };
+
+    if (status === 'done') {
       if (Number(amount) <= 0) {
         alert('Сумма сделки не может равняться нулю или быть ниже.');
         return;
       }
+      const percent = Number(brokerPercent);
+      if (percent < 0 || percent > 100) {
+        alert('Процент брокера должен быть от 0 до 100.');
+        return;
+      }
       body.amount = Number(amount);
+      body.brokerPercent = percent;
     }
-    await fetch(
+
+    const res = await fetch(
       `https://realty-bot-prod-1.onrender.com/api/inquiries/${inquiryId}/status`,
       {
         method: 'PUT',
@@ -124,8 +142,13 @@ export default function InquiriesPage() {
         body: JSON.stringify(body),
       },
     );
-    setShowAmount(false);
-    setAmount('');
+
+    if (!res.ok) {
+      alert('Не удалось завершить сделку');
+      return;
+    }
+
+    resetCompleteForm();
     fetchInquiries();
   };
 
@@ -165,7 +188,7 @@ export default function InquiriesPage() {
               className={`inquiry-item ${selectedId === inq.id ? 'inquiry-item--active' : ''}`}
               onClick={() => {
                 setSelectedId(inq.id);
-                setShowAmount(false);
+                resetCompleteForm();
                 setListOpen(false);
               }}
             >
@@ -193,13 +216,43 @@ export default function InquiriesPage() {
                   </span>
                 </div>
                 <div className="chat-actions">
-                  {selected.status === 'new' && (
-                    <button onClick={() => updateStatus(selected.id, 'done')}>
+                  {isAdmin && selected.status === 'new' && !showAmount && (
+                    <button onClick={() => setShowAmount(true)}>
                       ✅ Завершить
                     </button>
                   )}
                 </div>
               </div>
+
+              {isAdmin && showAmount && selected.status === 'new' && (
+                <div className="chat-complete-form">
+                  <input
+                    type="number"
+                    placeholder="Сумма сделки"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Процент брокера %"
+                    value={brokerPercent}
+                    min={0}
+                    max={100}
+                    onChange={(e) => setBrokerPercent(e.target.value)}
+                  />
+                  <button
+                    onClick={() => updateStatus(selected.id, 'done')}
+                  >
+                    Сохранить
+                  </button>
+                  <button
+                    className="chat-complete-form__cancel"
+                    onClick={resetCompleteForm}
+                  >
+                    Отмена
+                  </button>
+                </div>
+              )}
 
               <div className="chat-inquiry-card">
                 <strong>🏠 {selected.property?.title}</strong>

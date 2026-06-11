@@ -44,8 +44,15 @@ export class InquiriesController {
   @Put(':id/status')
   async updateStatus(
     @Param('id') id: string,
-    @Body() body: { status: string; amount?: number },
+    @Headers('x-user-id') telegramId: string,
+    @Body() body: { status: string; amount?: number; brokerPercent?: number },
   ) {
-    return this.inquiriesService.updateStatus(+id, body.status, body.amount);
+    return this.inquiriesService.updateStatus(
+      +id,
+      body.status,
+      telegramId,
+      body.amount,
+      body.brokerPercent,
+    );
   }
 }

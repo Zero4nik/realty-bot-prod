@@ -1,5 +1,10 @@
 import { Message } from './../../node_modules/.prisma/client/index.d';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf, Context } from 'telegraf';
@@ -117,21 +122,48 @@ export class InquiriesService {
       data: { inquiryId, userId: user.id, text },
     });
   }
-  async updateStatus(id: number, status: string, amount?: number) {
+  async updateStatus(
+    id: number,
+    status: string,
+    telegramId: string,
+    amount?: number,
+    brokerPercent = 0,
+  ) {
+    if (status === 'done') {
+      const user = await this.prisma.user.findUnique({
+        where: { telegramId },
+      });
+      if (!user || user.role !== 'admin') {
+        throw new ForbiddenException('Only admins can complete deals');
+      }
+      if (!amount || amount <= 0) {
+        throw new BadRequestException('Deal amount must be greater than zero');
+      }
+      if (brokerPercent < 0 || brokerPercent > 100) {
+        throw new BadRequestException('Broker percent must be between 0 and 100');
+      }
+    }
+
     const inquiry = await this.prisma.inquiry.update({
       where: { id },
       data: { status },
     });
+
     if (status === 'done' && amount) {
-      const commission = Math.round(amount * 0.05);
-      const yourPercent = Math.round(commission * 0.1);
+      const agencyCommission = Math.round(amount * 0.05);
+      const brokerCut = Math.round((agencyCommission * brokerPercent) / 100);
+      const netCommission = agencyCommission - brokerCut;
+      const yourPercent = Math.round(netCommission * 0.1);
 
       await this.prisma.transaction.create({
         data: {
           inquiryId: id,
-          commission,
-          yourPercent,
           amount,
+          commission: agencyCommission,
+          brokerPercent,
+          brokerCut,
+          netCommission,
+          yourPercent,
         },
       });
     }

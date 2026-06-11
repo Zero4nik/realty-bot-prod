@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Transaction" ADD COLUMN "brokerPercent" INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE "Transaction" ADD COLUMN "brokerCut" INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE "Transaction" ADD COLUMN "netCommission" INTEGER NOT NULL DEFAULT 0;

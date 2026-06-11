@@ -63,13 +63,16 @@ model Inquiry {
 }
 
 model Transaction {
-  id          Int      @id @default(autoincrement())
-  inquiryId   Int      @unique
-  amount      Int
-  commission  Int
-  yourPercent Int
-  createdAt   DateTime @default(now())
-  inquiry     Inquiry  @relation(fields: [inquiryId], references: [id])
+  id             Int      @id @default(autoincrement())
+  inquiryId      Int      @unique
+  amount         Int
+  commission     Int
+  brokerPercent  Int      @default(0)
+  brokerCut      Int      @default(0)
+  netCommission  Int      @default(0)
+  yourPercent    Int
+  createdAt      DateTime @default(now())
+  inquiry        Inquiry  @relation(fields: [inquiryId], references: [id])
 }
 
 model Message {
