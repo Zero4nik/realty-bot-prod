@@ -194,7 +194,6 @@ export default function InquiriesPage() {
                 </div>
               </div>
 
-              {/* Анкета квартиры при открытии чата */}
               <div className="chat-inquiry-card">
                 <strong>🏠 {selected.property?.title}</strong>
                 <p>📍 {`Город:${selected.property?.city}`}</p>
