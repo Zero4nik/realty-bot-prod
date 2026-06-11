@@ -14,7 +14,7 @@ interface Message {
 interface Inquiry {
   id: number;
   status: string;
-  property: { id: number; title: string; price: number };
+  property: { id: number; title: string; price: number; city: string };
   user: { id: number; firstName: string; username: string };
   messages?: Message[];
 }
@@ -26,16 +26,13 @@ export default function InquiriesPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState('');
   const [amount, setAmount] = useState('');
-  const [showAmount, setShowAmount] = useState(false);
+  const [, setShowAmount] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
-  const [listOpen, setListOpen] = useState(false); // ← вернул
+  const [listOpen, setListOpen] = useState(false);
 
-  // Получаем userId из initData (основной способ) или из initDataUnsafe (запасной)
   const getUserId = (): number | undefined => {
     const tg = window.Telegram?.WebApp;
     if (!tg) return undefined;
-
-    // Способ 1: парсим initData (надёжнее)
     try {
       const initData = (tg as any).initData || '';
       const params = new URLSearchParams(initData);
@@ -45,8 +42,6 @@ export default function InquiriesPage() {
         return user.id;
       }
     } catch (e) {}
-
-    // Способ 2: initDataUnsafe (если вдруг сработает)
     return tg.initDataUnsafe?.user?.id;
   };
 
@@ -74,7 +69,6 @@ export default function InquiriesPage() {
   useEffect(() => {
     fetchInquiries();
   }, []);
-
   useEffect(() => {
     if (selectedId) {
       fetchMessages(selectedId);
@@ -82,7 +76,6 @@ export default function InquiriesPage() {
       return () => clearInterval(interval);
     }
   }, [selectedId]);
-
   useEffect(() => {
     chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
   }, [messages]);
@@ -106,6 +99,7 @@ export default function InquiriesPage() {
     if (status === 'done' && amount) {
       if (Number(amount) <= 0) {
         alert('Сумма сделки не может равняться нулю или быть ниже.');
+        return;
       }
       body.amount = Number(amount);
     }
@@ -127,6 +121,16 @@ export default function InquiriesPage() {
 
   const selected = inquiries.find((i) => i.id === selectedId);
 
+  const getSenderLabel = (msg: Message) => {
+    if (!selected) return '?';
+    return msg.userId === selected.user?.id ? '👤 Покупатель' : '👔 Агент';
+  };
+
+  const getSenderInitial = (msg: Message) => {
+    if (!selected) return '?';
+    return msg.userId === selected.user?.id ? 'П' : 'А';
+  };
+
   return (
     <div className="page inquiries-page">
       <h2>📋 Чат</h2>
@@ -134,7 +138,6 @@ export default function InquiriesPage() {
       <button className="inquiries-toggle" onClick={() => setListOpen(true)}>
         ☰
       </button>
-
       {listOpen && (
         <div
           className="inquiries-overlay inquiries-overlay--open"
@@ -157,23 +160,18 @@ export default function InquiriesPage() {
               }}
             >
               <strong>{inq.property?.title || 'Без названия'}</strong>
-              <div
-                className="chat-message__avatar"
-                onClick={() => navigate(`/profile/${inq.user?.id}`)}
-              >
-                {inq.user?.firstName?.charAt(0) || '?'}
-              </div>
               <span>👤 {inq.user?.firstName}</span>
               <span className={`inquiry-status inquiry-status--${inq.status}`}>
                 {inq.status === 'new'
                   ? '🆕'
-                  : inq.status === 'in_progress'
-                    ? '🔄'
-                    : '✅'}
+                  : inq.status === 'done'
+                    ? '✅'
+                    : '🔄'}
               </span>
             </div>
           ))}
         </div>
+
         <div className="inquiries-chat">
           {selected ? (
             <>
@@ -186,36 +184,19 @@ export default function InquiriesPage() {
                 </div>
                 <div className="chat-actions">
                   {selected.status === 'new' && (
-                    <button
-                      onClick={() => updateStatus(selected.id, 'in_progress')}
-                    >
-                      🔄 В работу
+                    <button onClick={() => updateStatus(selected.id, 'done')}>
+                      ✅ Завершить
                     </button>
                   )}
-                  {selected.status === 'in_progress' && (
-                    <>
-                      {!showAmount ? (
-                        <button onClick={() => setShowAmount(true)}>
-                          ✅ Завершить
-                        </button>
-                      ) : (
-                        <div className="chat-amount">
-                          <input
-                            type="number"
-                            placeholder="Сумма сделки"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                          />
-                          <button
-                            onClick={() => updateStatus(selected.id, 'done')}
-                          >
-                            ✓
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
                 </div>
+              </div>
+
+              {/* Анкета квартиры при открытии чата */}
+              <div className="chat-inquiry-card">
+                <strong>🏠 {selected.property?.title}</strong>
+                <p>📍 {selected.property?.city}</p>
+                <p>💰 {selected.property?.price} zł/мес</p>
+                <p>👤 Клиент: {selected.user?.firstName}</p>
               </div>
 
               <div className="chat-messages" ref={chatRef}>
@@ -228,14 +209,19 @@ export default function InquiriesPage() {
                       className="chat-message__avatar"
                       onClick={() => navigate(`/profile/${msg.user?.id}`)}
                     >
-                      {msg.user?.firstName?.charAt(0) || '?'}
+                      {getSenderInitial(msg)}
                     </div>
-                    <div className="chat-message__bubble">{msg.text}</div>
-                    <div className="chat-message__time">
-                      {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                    <div>
+                      <div className="chat-message__sender">
+                        {getSenderLabel(msg)}
+                      </div>
+                      <div className="chat-message__bubble">{msg.text}</div>
+                      <div className="chat-message__time">
+                        {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </div>
                     </div>
                   </div>
                 ))}

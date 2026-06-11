@@ -22,14 +22,16 @@ body > #root > div {
   padding-top: 100px !important;
 }
 
-.profile-page,
-.property-page,
-.admin-page,
-.inquiries-page,
-.dashboard-page,
-.home-categories,
-.property-grid {
-  padding-top: 100px !important;
+@media (max-width: 600px) {
+  .profile-page,
+  .property-page,
+  .admin-page,
+  .inquiries-page,
+  .dashboard-page,
+  .home-categories,
+  .property-grid {
+    padding-top: 70px !important;
+  }
 }
 
 .app {
