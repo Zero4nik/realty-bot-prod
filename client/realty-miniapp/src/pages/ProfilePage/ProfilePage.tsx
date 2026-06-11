@@ -24,98 +24,89 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState('');
   const [about, setAbout] = useState('');
   const [editMode, setEditMode] = useState(false);
-  const { userId } = useParams<{ userId?: string }>();
+  const { userId: urlUserId } = useParams<{ userId?: string }>();
+  const currentTelegramId =
+    window.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const tg = window.Telegram?.WebApp;
-
-        // ВАЖНО: Инициализируем WebApp
         if (tg) {
           tg.ready();
           tg.expand();
         }
 
         const tgUser = tg?.initDataUnsafe?.user;
-        console.log('🔍 Telegram WebApp:', tg);
-        console.log('🔍 initDataUnsafe:', tg?.initDataUnsafe);
-        console.log('🔍 User:', tgUser);
+        let response: Response;
 
-        const telegramId = userId || tgUser?.id;
-
-        if (!telegramId) {
-          console.error('❌ Не удалось получить Telegram ID');
-          console.error(
-            '📋 initDataUnsafe:',
-            JSON.stringify(tg?.initDataUnsafe),
+        if (urlUserId) {
+          response = await fetch(
+            `https://realty-bot-prod-1.onrender.com/api/users/by-id/${urlUserId}`,
           );
-          setError(
-            'Не удалось получить данные пользователя из Telegram. Убедитесь, что вы открыли приложение через Telegram.',
-          );
-          setUser(null);
-          setLoading(false);
-          return;
-        }
-
-        console.log('✅ Telegram ID получен:', telegramId);
-
-        // Пробуем получить существующего пользователя
-        const response = await fetch(
-          `https://realty-bot-prod-1.onrender.com/api/users/${telegramId}`,
-        );
-
-        console.log('📡 Response status:', response.status);
-
-        if (!response.ok) {
-          console.log('⚠️ Пользователь не найден, создаем нового...');
-
-          // Создаем нового пользователя
-          const createRes = await fetch(
-            'https://realty-bot-prod-1.onrender.com/api/users',
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                telegramId: String(telegramId),
-                firstName: tgUser?.first_name || 'Пользователь',
-                lastName: tgUser?.last_name || '',
-                username: tgUser?.username || null,
-              }),
-            },
-          );
-
-          console.log('📡 Create response status:', createRes.status);
-
-          if (!createRes.ok) {
-            const errorText = await createRes.text();
-            console.error('❌ Ошибка создания пользователя:', errorText);
-            setError(`Ошибка создания пользователя: ${createRes.status}`);
+        } else {
+          const telegramId = tgUser?.id;
+          if (!telegramId) {
+            setError(
+              'Не удалось получить данные пользователя из Telegram. Убедитесь, что вы открыли приложение через Telegram.',
+            );
             setUser(null);
-            setLoading(false);
             return;
           }
 
-          const newUser = await createRes.json();
-          console.log('✅ Пользователь создан:', newUser);
-          setUser(newUser);
-          setPhone(newUser.phone || '');
-          setAbout(newUser.about || '');
-          setReferralLink(
-            `https://t.me/arendapl_bot?start=ref_${newUser.referralCode}`,
+          response = await fetch(
+            `https://realty-bot-prod-1.onrender.com/api/users/${telegramId}`,
           );
-        } else {
-          const userData = await response.json();
-          console.log('✅ Пользователь загружен:', userData);
-          setUser(userData);
-          setPhone(userData.phone || '');
-          setAbout(userData.about || '');
-          setReferralLink(
-            `https://t.me/arendapl_bot?start=ref_${userData.referralCode}`,
-          );
+
+          if (!response.ok) {
+            const createRes = await fetch(
+              'https://realty-bot-prod-1.onrender.com/api/users',
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  telegramId: String(telegramId),
+                  firstName: tgUser?.first_name || 'Пользователь',
+                  lastName: tgUser?.last_name || '',
+                  username: tgUser?.username || null,
+                }),
+              },
+            );
+
+            if (!createRes.ok) {
+              setError(`Ошибка создания пользователя: ${createRes.status}`);
+              setUser(null);
+              return;
+            }
+
+            const newUser = await createRes.json();
+            setUser(newUser);
+            setPhone(newUser.phone || '');
+            setAbout(newUser.about || '');
+            setReferralLink(
+              `https://t.me/arendapl_bot?start=ref_${newUser.referralCode}`,
+            );
+            return;
+          }
         }
+
+        if (!response.ok) {
+          setError('Пользователь не найден');
+          setUser(null);
+          return;
+        }
+
+        const userData = await response.json();
+        setUser(userData);
+        setPhone(userData.phone || '');
+        setAbout(userData.about || '');
+        setReferralLink(
+          `https://t.me/arendapl_bot?start=ref_${userData.referralCode}`,
+        );
       } catch (error) {
-        console.error('❌ Ошибка загрузки профиля:', error);
         setError(
           `Ошибка сети: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
         );
@@ -126,7 +117,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, []);
+  }, [urlUserId]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink).then(() => {
@@ -186,6 +177,8 @@ export default function ProfilePage() {
     );
   }
 
+  const isOwnProfile = user.telegramId === currentTelegramId;
+
   return (
     <div className="page profile-page">
       <h2 className="page-title">👤 Профиль</h2>
@@ -224,31 +217,33 @@ export default function ProfilePage() {
           {copied ? '✅ Скопировано' : '📋 Копировать ссылку'}
         </button>
       </div>
-      <div className="profile-section">
-        <h3>О себе</h3>
-        {editMode ? (
-          <>
-            <input
-              placeholder="Телефон"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <textarea
-              placeholder="Пожелания по поиску"
-              value={about}
-              onChange={(e) => setAbout(e.target.value)}
-              rows={3}
-            />
-            <button onClick={saveProfile}>Сохранить</button>
-          </>
-        ) : (
-          <div onClick={() => setEditMode(true)}>
-            <p>📱 {phone || 'Не указан'}</p>
-            <p>📝 {about || 'Не указаны'}</p>
-            <button>Редактировать</button>
-          </div>
-        )}
-      </div>
+      {isOwnProfile && (
+        <div className="profile-section">
+          <h3>О себе</h3>
+          {editMode ? (
+            <>
+              <input
+                placeholder="Телефон"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              <textarea
+                placeholder="Пожелания по поиску"
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
+                rows={3}
+              />
+              <button onClick={saveProfile}>Сохранить</button>
+            </>
+          ) : (
+            <div onClick={() => setEditMode(true)}>
+              <p>📱 {phone || 'Не указан'}</p>
+              <p>📝 {about || 'Не указаны'}</p>
+              <button>Редактировать</button>
+            </div>
+          )}
+        </div>
+      )}
       <BottomNav activeTab="profile" />
     </div>
   );

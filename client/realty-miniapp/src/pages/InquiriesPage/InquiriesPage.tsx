@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './InquiriesPage.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface Message {
   id: number;
@@ -21,6 +21,7 @@ interface Inquiry {
 
 export default function InquiriesPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -65,6 +66,16 @@ export default function InquiriesPage() {
   useEffect(() => {
     fetchInquiries();
   }, []);
+
+  useEffect(() => {
+    const inquiryParam = searchParams.get('inquiry');
+    if (!inquiryParam || inquiries.length === 0) return;
+
+    const inquiryId = Number(inquiryParam);
+    if (inquiries.some((inq) => inq.id === inquiryId)) {
+      setSelectedId(inquiryId);
+    }
+  }, [inquiries, searchParams]);
   useEffect(() => {
     if (selectedId) {
       fetchMessages(selectedId);

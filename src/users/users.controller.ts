@@ -36,6 +36,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('by-id/:id')
+  async getProfileById(@Param('id') id: string) {
+    const user = await this.usersService.getProfileById(+id);
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+    return user;
+  }
+
   @Get(':telegramId')
   async getProfile(@Param('telegramId') telegramId: string) {
     const user = await this.usersService.getProfile(telegramId);

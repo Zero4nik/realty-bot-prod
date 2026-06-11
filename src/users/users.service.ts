@@ -61,6 +61,15 @@ export class UsersService {
     return this.getProfile(data.telegramId);
   }
 
+  async getProfileById(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { telegramId: true },
+    });
+    if (!user) return null;
+    return this.getProfile(user.telegramId);
+  }
+
   async getProfile(telegramId: string) {
     const user = await this.prisma.user.findUnique({
       where: { telegramId },
