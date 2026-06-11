@@ -99,6 +99,8 @@ export default function ProfilePage() {
           const newUser = await createRes.json();
           console.log('✅ Пользователь создан:', newUser);
           setUser(newUser);
+          setPhone(newUser.phone || '');
+          setAbout(newUser.about || '');
           setReferralLink(
             `https://t.me/arendapl_bot?start=ref_${newUser.referralCode}`,
           );
@@ -106,6 +108,8 @@ export default function ProfilePage() {
           const userData = await response.json();
           console.log('✅ Пользователь загружен:', userData);
           setUser(userData);
+          setPhone(userData.phone || '');
+          setAbout(userData.about || '');
           setReferralLink(
             `https://t.me/arendapl_bot?start=ref_${userData.referralCode}`,
           );
