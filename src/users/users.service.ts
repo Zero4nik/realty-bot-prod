@@ -96,8 +96,8 @@ export class UsersService {
       inquiriesCount: user._count.inquiries,
       referralEarnings: 0,
       dealsCount: 0,
-      phone: true,
-      about: true,
+      phone: user.phone,
+      about: user.about,
     };
   }
 
