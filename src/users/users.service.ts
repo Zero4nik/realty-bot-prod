@@ -54,7 +54,7 @@ export class UsersService {
         firstName: data.firstName || null,
         lastName: data.lastName || null,
         referralCode: ownReferralCode,
-        referrerId: referrerId, // ← СВЯЗЬ С ПРИГЛАСИВШИМ
+        referrerId: referrerId,
       },
     });
 
@@ -96,6 +96,8 @@ export class UsersService {
       inquiriesCount: user._count.inquiries,
       referralEarnings: 0,
       dealsCount: 0,
+      phone: true,
+      about: true,
     };
   }
 
