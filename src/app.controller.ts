@@ -20,4 +20,13 @@ export class AppController {
     await this.prisma.property.deleteMany({});
     return { done: true, message: 'Все данные кроме пользователей удалены' };
   }
+  @Post('api/db-push')
+  async dbPush() {
+    const { exec } = require('child_process');
+    return new Promise((resolve) => {
+      exec('npx prisma db push', (err, stdout) => {
+        resolve({ done: !err, output: stdout });
+      });
+    });
+  }
 }
