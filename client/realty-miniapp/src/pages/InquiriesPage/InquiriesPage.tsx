@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import BottomNav from '../../components/pages/BottomNav/BottomNav';
 import './InquiriesPage.css';
 import { useNavigate } from 'react-router-dom';
+
 interface Message {
   id: number;
   text: string;
@@ -27,13 +28,29 @@ export default function InquiriesPage() {
   const [amount, setAmount] = useState('');
   const [showAmount, setShowAmount] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const [listOpen, setListOpen] = useState(false); // ← вернул
 
-  const initData = (window.Telegram?.WebApp as any)?.initData || '';
-  const params = new URLSearchParams(initData);
-  const userStr = params.get('user');
-  const user = userStr ? JSON.parse(userStr) : null;
-  const userId = user?.id || tgUser?.id;
+  // Получаем userId из initData (основной способ) или из initDataUnsafe (запасной)
+  const getUserId = (): number | undefined => {
+    const tg = window.Telegram?.WebApp;
+    if (!tg) return undefined;
+
+    // Способ 1: парсим initData (надёжнее)
+    try {
+      const initData = (tg as any).initData || '';
+      const params = new URLSearchParams(initData);
+      const userStr = params.get('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        return user.id;
+      }
+    } catch (e) {}
+
+    // Способ 2: initDataUnsafe (если вдруг сработает)
+    return tg.initDataUnsafe?.user?.id;
+  };
+
+  const userId = getUserId();
 
   const fetchInquiries = async () => {
     const res = await fetch(
