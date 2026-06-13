@@ -62,6 +62,7 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+    alert('Твой ID: ' + id);
     if (!id) {
       setError('Откройте приложение через Telegram бота');
       setLoading(false);
