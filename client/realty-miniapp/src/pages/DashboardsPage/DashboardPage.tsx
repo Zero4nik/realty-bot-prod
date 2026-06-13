@@ -69,7 +69,9 @@ export default function DashboardPage() {
       }
     };
 
-    fetchDashboard();
+    setTimeout(() => {
+      fetchDashboard();
+    }, 1000);
   }, []);
 
   if (loading) {

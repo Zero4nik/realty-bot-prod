@@ -56,7 +56,9 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    loadProperties();
+    setTimeout(() => {
+      loadProperties();
+    }, 1000);
   }, []);
 
   const loadProperties = async () => {
