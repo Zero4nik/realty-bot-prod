@@ -31,19 +31,24 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const userId =
-    window.Telegram?.WebApp?.initDataUnsafe?.user?.id || '6537896588';
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         setLoading(true);
 
+        const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+        if (!id) {
+          setError('Откройте приложение через Telegram бота');
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch(
           'https://realty-bot-prod-1.onrender.com/api/dashboard',
           {
             headers: {
-              'x-user-id': String(userId || ''),
+              'x-user-id': String(id),
             },
           },
         );
@@ -65,7 +70,7 @@ export default function DashboardPage() {
     };
 
     fetchDashboard();
-  }, [userId]);
+  }, []);
 
   if (loading) {
     return (
