@@ -61,6 +61,12 @@ export default function AdminPage() {
   const loadProperties = async () => {
     setLoading(true);
     setError(null);
+    const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+    if (!id) {
+      setError('Откройте приложение через Telegram бота');
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch(
         'https://realty-bot-prod-1.onrender.com/api/properties?showAll=true',
