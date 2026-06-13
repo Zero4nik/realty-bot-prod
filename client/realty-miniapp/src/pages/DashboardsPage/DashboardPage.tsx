@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './DashboardPage.css';
 import { useNavigate } from 'react-router-dom';
+import { getTelegramId } from '../../lib/telegram';
 
 interface DashboardStats {
   totalUsers: number;
@@ -32,23 +33,11 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // ИСПРАВЛЕНО: Асинхронная функция с механизмом повторных попыток
-  const getTelegramId = async (): Promise<string | undefined> => {
-    for (let i = 0; i < 5; i++) {
-      const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
-      if (id) return id;
-      // Ждем 500мс перед следующей попыткой
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-    return undefined;
-  };
-
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         setLoading(true);
 
-        // ИСПРАВЛЕНО: Ждем инициализации WebApp через await
         const id = await getTelegramId();
         if (!id) {
           setError('Откройте приложение через Telegram бота');
@@ -60,7 +49,7 @@ export default function DashboardPage() {
           'https://realty-bot-prod-1.onrender.com/api/dashboard',
           {
             headers: {
-              'x-user-id': id, // id уже строка, String() не нужен
+              'x-user-id': id,
             },
           },
         );
@@ -81,7 +70,6 @@ export default function DashboardPage() {
       }
     };
 
-    // ИСПРАВЛЕНО: Убрали setTimeout, теперь просто вызываем функцию
     fetchDashboard();
   }, []);
 
