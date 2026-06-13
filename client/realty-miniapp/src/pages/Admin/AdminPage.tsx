@@ -51,8 +51,9 @@ export default function AdminPage() {
   });
   const [showForm, setShowForm] = useState(false);
 
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const telegramId = tgUser?.id?.toString();
+  const getTelegramId = (): string | undefined => {
+    return window.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
+  };
 
   useEffect(() => {
     loadProperties();
@@ -61,8 +62,7 @@ export default function AdminPage() {
   const loadProperties = async () => {
     setLoading(true);
     setError(null);
-    const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-    alert('Твой ID: ' + id);
+    const id = getTelegramId();
     if (!id) {
       setError('Откройте приложение через Telegram бота');
       setLoading(false);
@@ -72,7 +72,7 @@ export default function AdminPage() {
       const res = await fetch(
         'https://realty-bot-prod-1.onrender.com/api/properties?showAll=true',
         {
-          headers: { 'x-user-id': String(id) || '' },
+          headers: { 'x-user-id': id },
         },
       );
       if (!res.ok) {
@@ -112,8 +112,9 @@ export default function AdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-    if (!telegramId) {
+
+    const id = getTelegramId();
+    if (!id) {
       alert('❌ Открой Mini App через бота @arendapl_bot');
       return;
     }
@@ -145,7 +146,7 @@ export default function AdminPage() {
         {
           method: 'POST',
           headers: {
-            'x-user-id': String(id),
+            'x-user-id': id,
           },
           body: formData,
         },
@@ -166,14 +167,15 @@ export default function AdminPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (propertyId: number) => {
     if (!confirm('Удалить квартиру безвозвратно?')) return;
+    const id = getTelegramId();
     try {
       await fetch(
-        `https://realty-bot-prod-1.onrender.com/api/properties/${id}`,
+        `https://realty-bot-prod-1.onrender.com/api/properties/${propertyId}`,
         {
           method: 'DELETE',
-          headers: { 'x-user-id': telegramId || '' },
+          headers: { 'x-user-id': id || '' },
         },
       );
       loadProperties();
@@ -182,8 +184,8 @@ export default function AdminPage() {
     }
   };
 
-  const handleViewProperty = (id: number) => {
-    navigate(`/property/${id}`);
+  const handleViewProperty = (propertyId: number) => {
+    navigate(`/property/${propertyId}`);
   };
 
   const toggleAmenity = (key: keyof Amenities) => {
