@@ -6,6 +6,7 @@ declare global {
       WebApp: {
         requestFullscreen(): unknown;
         ready(): void;
+        initData: string;
         close(): void;
         expand(): void;
         showConfirm(
