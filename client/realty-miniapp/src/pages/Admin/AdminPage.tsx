@@ -51,20 +51,26 @@ export default function AdminPage() {
   });
   const [showForm, setShowForm] = useState(false);
 
-  const getTelegramId = (): string | undefined => {
-    return window.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
+  // ИСПРАВЛЕНО: Асинхронная функция с механизмом повторных попыток
+  const getTelegramId = async (): Promise<string | undefined> => {
+    for (let i = 0; i < 5; i++) {
+      const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
+      if (id) return id;
+      // Ждем 500мс перед следующей попыткой
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    return undefined;
   };
 
+  // ИСПРАВЛЕНО: Убрали setTimeout, теперь просто вызываем загрузку
   useEffect(() => {
-    setTimeout(() => {
-      loadProperties();
-    }, 1000);
+    loadProperties();
   }, []);
 
   const loadProperties = async () => {
     setLoading(true);
     setError(null);
-    const id = getTelegramId();
+    const id = await getTelegramId(); // ИСПРАВЛЕНО: добавлен await
     if (!id) {
       setError('Откройте приложение через Telegram бота');
       setLoading(false);
@@ -115,7 +121,7 @@ export default function AdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const id = getTelegramId();
+    const id = await getTelegramId(); // ИСПРАВЛЕНО: добавлен await
     if (!id) {
       alert('❌ Открой Mini App через бота @arendapl_bot');
       return;
@@ -171,7 +177,7 @@ export default function AdminPage() {
 
   const handleDelete = async (propertyId: number) => {
     if (!confirm('Удалить квартиру безвозвратно?')) return;
-    const id = getTelegramId();
+    const id = await getTelegramId(); // ИСПРАВЛЕНО: добавлен await
     try {
       await fetch(
         `https://realty-bot-prod-1.onrender.com/api/properties/${propertyId}`,
