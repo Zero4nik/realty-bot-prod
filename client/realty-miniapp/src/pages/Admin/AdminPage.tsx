@@ -60,16 +60,11 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     const id = await getTelegramId();
-    if (!id) {
-      setError('Откройте приложение через Telegram бота');
-      setLoading(false);
-      return;
-    }
     try {
       const res = await fetch(
         'https://realty-bot-prod-1.onrender.com/api/properties?showAll=true',
         {
-          headers: { 'x-user-id': id },
+          headers: { 'x-user-id': id || '' },
         },
       );
       if (!res.ok) {
@@ -111,10 +106,6 @@ export default function AdminPage() {
     e.preventDefault();
 
     const id = await getTelegramId();
-    if (!id) {
-      alert('❌ Открой Mini App через бота @arendapl_bot');
-      return;
-    }
 
     try {
       const formData = new FormData();
@@ -143,7 +134,7 @@ export default function AdminPage() {
         {
           method: 'POST',
           headers: {
-            'x-user-id': id,
+            'x-user-id': id || '',
           },
           body: formData,
         },
