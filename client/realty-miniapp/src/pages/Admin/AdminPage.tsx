@@ -72,7 +72,7 @@ export default function AdminPage() {
       const res = await fetch(
         'https://realty-bot-prod-1.onrender.com/api/properties?showAll=true',
         {
-          headers: { 'x-user-id': telegramId || '' },
+          headers: { 'x-user-id': String(id) || '' },
         },
       );
       if (!res.ok) {
@@ -112,7 +112,7 @@ export default function AdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
     if (!telegramId) {
       alert('❌ Открой Mini App через бота @arendapl_bot');
       return;
@@ -145,7 +145,7 @@ export default function AdminPage() {
         {
           method: 'POST',
           headers: {
-            'x-user-id': telegramId,
+            'x-user-id': String(id),
           },
           body: formData,
         },
