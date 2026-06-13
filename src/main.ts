@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://realty-bot-prod.vercel.app',
+      'https://realty-bot-prod-1.vercel.app',
       'https://web.telegram.org',
       'https://t.me',
       'http://localhost:5173',

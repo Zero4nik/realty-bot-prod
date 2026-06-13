@@ -7,16 +7,13 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class adminGuard implements CanActivate {
-  private readonly logger = new Logger(adminGuard.name);
+export class AdminGuard implements CanActivate {
+  // С большой буквы AdminGuard
+  private readonly logger = new Logger(AdminGuard.name);
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
 
-    // Берём ID из трёх источников (по приоритету):
-    // 1. request.user (если был TelegramAuthGuard)
-    // 2. x-user-id заголовок (для curl)
-    // 3. x-telegram-initdata (если есть, парсим на лету)
     let userId = request.user?.id?.toString();
 
     if (!userId) {
