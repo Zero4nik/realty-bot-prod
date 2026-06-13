@@ -5,14 +5,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // MVP: reflect any origin so the Telegram Mini App works regardless of which
+  // Vercel domain it is served from.
   app.enableCors({
-    origin: [
-      'https://realty-bot-prod-1.vercel.app',
-      'https://web.telegram.org',
-      'https://t.me',
-      'http://localhost:5173',
-      'http://localhost:3000',
-    ],
+    origin: true,
     methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
     allowedHeaders:
       'Content-Type, x-user-id, x-telegram-initdata, Authorization',
