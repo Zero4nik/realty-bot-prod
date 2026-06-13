@@ -39,25 +39,17 @@ export default function DashboardPage() {
         setLoading(true);
 
         const id = await getTelegramId();
-        if (!id) {
-          setError('Откройте приложение через Telegram бота');
-          setLoading(false);
-          return;
-        }
 
         const response = await fetch(
           'https://realty-bot-prod-1.onrender.com/api/dashboard',
           {
             headers: {
-              'x-user-id': id,
+              'x-user-id': id || '',
             },
           },
         );
 
         if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error('Доступ запрещён. Вы не администратор.');
-          }
           throw new Error(`Ошибка сервера: ${response.status}`);
         }
 
