@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
-import { botModule } from './bot/bot.module';
+import { BotModule } from './bot/bot.module';
 import { PropertiesModule } from './properties/properties.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,7 +13,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
-    botModule,
+    BotModule,
     PropertiesModule,
     InquiriesModule,
     AuthModule,
